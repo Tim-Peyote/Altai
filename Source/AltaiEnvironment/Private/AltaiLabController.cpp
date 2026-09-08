@@ -1,4 +1,8 @@
 #include "AltaiLabController.h"
+#include "AltaiDeveloperPanel.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Misc/App.h"
+#include "HAL/IConsoleManager.h"
 #include "AltaiWeather.h"
 #include "AltaiSurface.h"
 #include "AltaiTraversal.h"
@@ -18,7 +22,11 @@
 
 void AAltaiLabController::BeginPlay()
 {
- Super::BeginPlay();SetInputMode(FInputModeGameOnly());bShowMouseCursor=false;
+ Super::BeginPlay();
+#if WITH_EDITOR
+ if(GetWorld()->WorldType==EWorldType::PIE)if(auto* V=IConsoleManager::Get().FindConsoleVariable(TEXT("r.Editor.Viewport.OverridePIEScreenPercentage"))){OldPIEScreenOverride=V->GetInt();OldPIEScreenFlags=V->GetFlags();V->Set(0,ECVF_SetByCode);}
+#endif
+ SetInputMode(FInputModeGameOnly());bShowMouseCursor=false;
  if(TActorIterator<AAltaiWeatherRig> It(GetWorld());It){Weather=*It;}
  for(TActorIterator<AStaticMeshActor> A(GetWorld());A;++A)if(A->ActorHasTag(TEXT("AltaiClimbable")) || A->ActorHasTag(TEXT("AltaiGripVisual")) || A->GetStaticMeshComponent()->IsSimulatingPhysics()){auto* Wet=NewObject<UAltaiWetSurface>(*A,TEXT("LocalWetSurface"));Wet->RegisterComponent();}
  if(auto* C=Cast<ACharacter>(GetPawn()))
@@ -42,26 +50,12 @@ void AAltaiLabController::SetupInputComponent()
  InputComponent->BindKey(EKeys::LeftControl,IE_Pressed,this,&AAltaiLabController::StartCrouch);
  InputComponent->BindKey(EKeys::LeftControl,IE_Released,this,&AAltaiLabController::StopCrouch);
  InputComponent->BindKey(EKeys::RightMouseButton,IE_Pressed,this,&AAltaiLabController::NextLimb);
- InputComponent->BindKey(EKeys::B,IE_Pressed,this,&AAltaiLabController::CycleBodyMass);
+ InputComponent->BindKey(FInputChord(EKeys::D,false,true,false,false),IE_Pressed,this,&AAltaiLabController::ToggleDeveloperPanel);
+ InputComponent->BindKey(EKeys::F1,IE_Pressed,this,&AAltaiLabController::ToggleDeveloperPanel);
  InputComponent->BindKey(EKeys::F,IE_Pressed,this,&AAltaiLabController::Grab);
  InputComponent->BindKey(EKeys::E,IE_Pressed,this,&AAltaiLabController::Climb);
  InputComponent->BindKey(EKeys::C,IE_Pressed,this,&AAltaiLabController::ReleaseLedge);
- InputComponent->BindKey(EKeys::One,IE_Pressed,this,&AAltaiLabController::Preset0);
- InputComponent->BindKey(EKeys::Two,IE_Pressed,this,&AAltaiLabController::Preset1);
- InputComponent->BindKey(EKeys::Three,IE_Pressed,this,&AAltaiLabController::Preset2);
- InputComponent->BindKey(EKeys::Four,IE_Pressed,this,&AAltaiLabController::Preset3);
- InputComponent->BindKey(EKeys::Five,IE_Pressed,this,&AAltaiLabController::Preset4);
- InputComponent->BindKey(EKeys::Six,IE_Pressed,this,&AAltaiLabController::Preset5);
- InputComponent->BindKey(EKeys::Seven,IE_Pressed,this,&AAltaiLabController::Preset6);
- InputComponent->BindKey(EKeys::Eight,IE_Pressed,this,&AAltaiLabController::Day);
- InputComponent->BindKey(EKeys::Nine,IE_Pressed,this,&AAltaiLabController::Night);
- InputComponent->BindKey(EKeys::Zero,IE_Pressed,this,&AAltaiLabController::AutoWeather);
- InputComponent->BindKey(EKeys::P,IE_Pressed,this,&AAltaiLabController::Clock);
- InputComponent->BindKey(EKeys::LeftBracket,IE_Pressed,this,&AAltaiLabController::Earlier);
- InputComponent->BindKey(EKeys::RightBracket,IE_Pressed,this,&AAltaiLabController::Later);
- InputComponent->BindKey(EKeys::BackSpace,IE_Pressed,this,&AAltaiLabController::Reset);
- InputComponent->BindKey(EKeys::H,IE_Pressed,this,&AAltaiLabController::ToggleHUD);
- InputComponent->BindKey(EKeys::L,IE_Pressed,this,&AAltaiLabController::ToggleLightning);
+
 }
 void AAltaiLabController::CycleBodyMass(){if(auto* C=Cast<ACharacter>(GetPawn())){auto* M=C->GetCharacterMovement();M->Mass=M->Mass>=119?60:M->Mass+20;}}
 void AAltaiLabController::PlaceHand(){if(WallClimbing && WallClimbing->Attached){WallClimbing->PlaceContact();return;}if(Hands)Hands->TryGrab(true);}
@@ -84,35 +78,43 @@ void AAltaiLabController::Later(){if(Weather)Weather->SetHour(Weather->Hour+2);}
 void AAltaiLabController::Reset(){UGameplayStatics::OpenLevel(this,FName(*UGameplayStatics::GetCurrentLevelName(this,true)));}
 void AAltaiLabController::ToggleHUD(){ShowLabHUD=!ShowLabHUD;}
 void AAltaiLabController::ToggleLightning(){if(Weather)Weather->LightningEnabled=!Weather->LightningEnabled;}
+void AAltaiLabController::Tick(float Dt)
+{Super::Tick(Dt);FrameSeconds=FMath::Lerp(FrameSeconds,float(FApp::GetDeltaTime()),.08f);}
+void AAltaiLabController::ToggleDeveloperPanel()
+{
+ if(DeveloperPanel){CloseDeveloperPanel();return;}
+ PreviouslyPaused=UGameplayStatics::IsGamePaused(this);
+ if(auto* C=Cast<ACharacter>(GetPawn())){C->Tags.AddUnique(TEXT("AltaiDeveloperPanelOpen"));C->GetCharacterMovement()->StopMovementImmediately();if(!Hands || !Hands->Held)C->UnCrouch();}
+ if(WallClimbing){PreviousWallInput=WallClimbing->InputFromPlayer;WallClimbing->InputFromPlayer=false;}
+ SetIgnoreMoveInput(true);SetIgnoreLookInput(true);FlushPressedKeys();
+ DeveloperPanel=CreateWidget<UAltaiDeveloperPanel>(this,UAltaiDeveloperPanel::StaticClass());DeveloperPanel->AddToViewport(100);bShowMouseCursor=true;
+ FInputModeUIOnly Mode;Mode.SetWidgetToFocus(DeveloperPanel->TakeWidget());Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);SetInputMode(Mode);DeveloperPanel->SetKeyboardFocus();
+}
+void AAltaiLabController::CloseDeveloperPanel()
+{
+ if(!DeveloperPanel)return;
+ DeveloperPanel->RemoveFromParent();DeveloperPanel=nullptr;
+ if(GetPawn())GetPawn()->Tags.Remove(TEXT("AltaiDeveloperPanelOpen"));
+ if(WallClimbing)WallClimbing->InputFromPlayer=PreviousWallInput;
+ UGameplayStatics::SetGamePaused(this,PreviouslyPaused);
+ SetIgnoreMoveInput(false);SetIgnoreLookInput(false);FlushPressedKeys();bShowMouseCursor=false;SetInputMode(FInputModeGameOnly());
+}
+void AAltaiLabController::EndPlay(const EEndPlayReason::Type R){CloseDeveloperPanel();
+#if WITH_EDITOR
+ if(OldPIEScreenOverride>=0)if(auto* V=IConsoleManager::Get().FindConsoleVariable(TEXT("r.Editor.Viewport.OverridePIEScreenPercentage"))){V->Set(OldPIEScreenOverride,ECVF_SetByCode);V->ClearFlags(ECVF_SetByMask);V->SetFlags(EConsoleVariableFlags(OldPIEScreenFlags & ECVF_SetByMask));}
+#endif
+ Super::EndPlay(R);}
+void AAltaiLabController::ResetLab(){CloseDeveloperPanel();Reset();}
 void AAltaiLabHUD::DrawHUD()
 {
- Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC || !PC->ShowLabHUD)return;
- const float Scale=FMath::Clamp(Canvas->ClipX/1600.f,.75f,2.f);
- DrawRect(FLinearColor(.015,.022,.021,.8),24,24,650*Scale,260*Scale);
+ Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC || !PC->ShowLabHUD || PC->DeveloperPanel)return;
  const FLinearColor Gold(.75,.67,.46),White(.8,.85,.82);
  DrawRect(Gold,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
- auto Text=[&](const FString& S,float Y,FLinearColor Color){DrawText(S,Color,40,28+Y*Scale,GEngine->GetSmallFont(),Scale*1.15f);};
- Text(TEXT("ALTAI  /  ENVIRONMENT LAB"),8,Gold);
- auto* W=PC->Weather.Get();
- if(W)
- {
-  FString Label=W->Presets.IsValidIndex(W->PresetIndex)&&W->Presets[W->PresetIndex]?W->Presets[W->PresetIndex]->Label.ToString():TEXT("Custom");
-  Text(FString::Printf(TEXT("%s  |  %02d:%02d  |  Auto weather %s / clock %s"),*Label,int(W->Hour),int(FMath::Frac(W->Hour)*60),W->AutomaticWeather?TEXT("ON"):TEXT("OFF"),W->CycleTime?TEXT("ON"):TEXT("OFF")),32,White);
+ DrawText(TEXT("Ctrl+D / F1  ·  Панель разработчика"),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
+ if(PC->ShowDiagnostics){
+  DrawRect(FLinearColor(.015,.022,.021,.85),24,24,340,82);
+  DrawText(FString::Printf(TEXT("%.0f FPS  |  %.1f ms"),1.f/FMath::Max(PC->FrameSeconds,.001f),PC->FrameSeconds*1000),Gold,36,34,GEngine->GetSmallFont());
+  if(PC->Hands)DrawText(FString::Printf(TEXT("Load %.1f kg  |  Stamina %.0f%%  |  Speed %.0f%%"),PC->Hands->HeldMass,PC->Hands->Stamina*100,PC->Hands->CarrySpeedScale*100),White,36,55,GEngine->GetSmallFont());
+  if(PC->SurfaceResponse)DrawText(FString::Printf(TEXT("Steps %d  |  Stumbles %d"),PC->SurfaceResponse->StepCount,PC->SurfaceResponse->StumbleCount),White,36,76,GEngine->GetSmallFont());
  }
- if(PC->SurfaceResponse)
- {
-  auto* S=PC->SurfaceResponse.Get();
-  Text(FString::Printf(TEXT("Surface: %s   Speed: %.0f%%   Steps: %d   Stumbles: %d"),*StaticEnum<EAltaiSurface>()->GetNameStringByValue(int64(S->CurrentSurface)),S->SpeedScale*100,S->StepCount,S->StumbleCount),54,White);
- }
- Text(TEXT("1 Clear  2 Overcast  3 Rain  4 Fog  5 Storm  6 Snow  7 Sleet"),78,White);
- Text(TEXT("8 Day  9 Night  0 Auto weather  P Clock  [ / ] Time"),100,White);
- Text(TEXT("H Hide panel  L Lightning on/off  Delete/Backspace Reset"),122,White);
- Text(TEXT("V View  Ctrl Crouch  E Climb / top   C Release   Q Free limb   Space Jump off"),144,Gold);
- if(PC->WallClimbing && PC->WallClimbing->Attached)Text(FString::Printf(TEXT("Wall: grip %.0f%% wet %.0f%% stamina %.0f%% limb %d | RMB/LMB"),PC->WallClimbing->Grip*100,PC->WallClimbing->Wetness*100,PC->WallClimbing->Stamina*100,PC->WallClimbing->SelectedLimb+1),166,Gold);
- else if(PC->Traversal)Text(PC->Traversal->Hint,166,White);
- if(PC->WallClimbing && PC->WallClimbing->Attached){auto* Climb=PC->WallClimbing.Get();
-  Text(FString::Printf(TEXT("Supports LH %s  RH %s  LF %s  RF %s | %s"),Climb->ContactActive[0]?TEXT("ON"):TEXT("--"),Climb->ContactActive[1]?TEXT("ON"):TEXT("--"),Climb->ContactActive[2]?TEXT("ON"):TEXT("--"),Climb->ContactActive[3]?TEXT("ON"):TEXT("--"),Climb->MovingLimb!=INDEX_NONE?TEXT("Reaching"):TEXT("RMB select / LMB place")),232,White);
- }
- if(PC->Hands)Text(FString::Printf(TEXT("F Take/release | %.1f kg | Stamina %.0f%% | %s"),PC->Hands->HeldMass,PC->Hands->Stamina*100,*PC->Hands->Hint),188,Gold);
- if(PC->Hands)Text(FString::Printf(TEXT("B Body %.0f kg | Load speed %.0f%% | Balance demand %.0f%%"),PC->Hands->BodyMass,PC->Hands->CarrySpeedScale*100,PC->Hands->BalanceDemand*100),210,White);
 }

@@ -129,7 +129,7 @@ void UAltaiHands::TickComponent(float Dt,ELevelTick T,FActorComponentTickFunctio
  auto* C=Character.Get();
  if(ConstrainedGrip){
   auto* Prop=Cast<AAltaiArticulatedProp>(Held->GetOwner());if(!Prop){Release();return;}
-  if(auto* PC=Cast<APlayerController>(C->GetController())){float X=0,Y=0;PC->GetInputMouseDelta(X,Y);DragInteraction((-Y+X*.35f)*(Prop->Sliding?.5f:.8f));}
+  if(auto* PC=Cast<APlayerController>(C->GetController());PC && !C->ActorHasTag(TEXT("AltaiDeveloperPanelOpen"))){float X=0,Y=0;PC->GetInputMouseDelta(X,Y);DragInteraction((-Y+X*.35f)*(Prop->Sliding?.5f:.8f));}
   RefreshGripGoals();
   const float Reach=FVector::Dist(C->GetMesh()->GetSocketLocation(TEXT("upperarm_r")),ContactGoals[1]);
   OverreachTime=Reach>LimbReach[1]+12?OverreachTime+Dt:0;

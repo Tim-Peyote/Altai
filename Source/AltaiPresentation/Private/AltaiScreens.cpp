@@ -1,4 +1,5 @@
 #include "AltaiScreens.h"
+#include "AltaiGraphicsPanel.h"
 #include "AltaiInventoryScreen.h"
 #include "AltaiSession.h"
 #include "Components/Button.h"
@@ -159,7 +160,7 @@ void AAltaiPlayerController::ShowScreen(EAltaiScreenKind Kind)
  if(HUDWidget)HUDWidget->SetVisibility(bUI?ESlateVisibility::Collapsed:ESlateVisibility::HitTestInvisible);
  if(!bUI){FInputModeGameOnly M;SetInputMode(M);return;}
  TSubclassOf<UAltaiScreen> Class;
- switch(Kind){case EAltaiScreenKind::MainMenu:Class=MainMenuClass;break;case EAltaiScreenKind::Pause:Class=PauseClass;break;case EAltaiScreenKind::Inventory:Class=InventoryClass;break;case EAltaiScreenKind::Settings:Class=SettingsClass;break;case EAltaiScreenKind::ConfirmNew:Class=ConfirmNewClass;break;case EAltaiScreenKind::LoadGame:Class=LoadGameClass;break;case EAltaiScreenKind::NewGame:Class=NewGameClass;break;case EAltaiScreenKind::ConfirmExit:Class=ConfirmExitClass;break;default:break;}
+ switch(Kind){case EAltaiScreenKind::MainMenu:Class=MainMenuClass;break;case EAltaiScreenKind::Pause:Class=PauseClass;break;case EAltaiScreenKind::Inventory:Class=InventoryClass;break;case EAltaiScreenKind::Settings:Class=UAltaiGraphicsScreen::StaticClass();break;case EAltaiScreenKind::ConfirmNew:Class=ConfirmNewClass;break;case EAltaiScreenKind::LoadGame:Class=LoadGameClass;break;case EAltaiScreenKind::NewGame:Class=NewGameClass;break;case EAltaiScreenKind::ConfirmExit:Class=ConfirmExitClass;break;default:break;}
  if(!Class)return;
  ActiveScreen=CreateWidget<UAltaiScreen>(this,Class);ActiveScreen->AddToViewport(10);
  FInputModeUIOnly M;M.SetWidgetToFocus(ActiveScreen->TakeWidget());M.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);SetInputMode(M);

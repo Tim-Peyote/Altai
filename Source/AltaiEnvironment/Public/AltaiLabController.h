@@ -12,6 +12,14 @@ class ALTAIENVIRONMENT_API AAltaiLabController : public APlayerController
 public:
  virtual void BeginPlay() override;
  virtual void SetupInputComponent() override;
+ virtual void Tick(float DeltaSeconds) override;
+ virtual void EndPlay(const EEndPlayReason::Type Reason) override;
+ UFUNCTION(BlueprintCallable) void ToggleDeveloperPanel();
+ UFUNCTION(BlueprintCallable) void CloseDeveloperPanel();
+ UFUNCTION(BlueprintCallable) void ResetLab();
+ UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiDeveloperPanel> DeveloperPanel;
+ UPROPERTY(BlueprintReadWrite) bool ShowDiagnostics=false;
+ UPROPERTY(BlueprintReadOnly) float FrameSeconds=.016f;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiSurfaceResponse> SurfaceResponse;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class AAltaiWeatherRig> Weather;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiTraversal> Traversal;
@@ -20,6 +28,8 @@ public:
  UPROPERTY(BlueprintReadWrite) bool ShowLabHUD=true;
  UFUNCTION(BlueprintCallable) void CycleBodyMass();
 private:
+ int OldPIEScreenOverride=-1;uint32 OldPIEScreenFlags=0;
+ bool PreviousWallInput=true,PreviouslyPaused=false;
  void PlaceHand();void ReleaseHand();void StartCrouch();void StopCrouch();void NextLimb();void Grab();void Climb();void ReleaseLedge();
  void Preset0();void Preset1();void Preset2();void Preset3();void Preset4();void Preset5();void Preset6();
  void Day();void Night();void AutoWeather();void Clock();void Later();void Earlier();void Reset();void ToggleHUD();void ToggleLightning();
