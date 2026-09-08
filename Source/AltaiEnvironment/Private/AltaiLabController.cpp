@@ -51,7 +51,6 @@ void AAltaiLabController::SetupInputComponent()
  InputComponent->BindKey(EKeys::LeftControl,IE_Released,this,&AAltaiLabController::StopCrouch);
  InputComponent->BindKey(EKeys::RightMouseButton,IE_Pressed,this,&AAltaiLabController::NextLimb);
  InputComponent->BindKey(FInputChord(EKeys::D,false,true,false,false),IE_Pressed,this,&AAltaiLabController::ToggleDeveloperPanel);
- InputComponent->BindKey(EKeys::F1,IE_Pressed,this,&AAltaiLabController::ToggleDeveloperPanel);
  InputComponent->BindKey(EKeys::F,IE_Pressed,this,&AAltaiLabController::Grab);
  InputComponent->BindKey(EKeys::E,IE_Pressed,this,&AAltaiLabController::Climb);
  InputComponent->BindKey(EKeys::C,IE_Pressed,this,&AAltaiLabController::ReleaseLedge);
@@ -110,7 +109,7 @@ void AAltaiLabHUD::DrawHUD()
  Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC || !PC->ShowLabHUD || PC->DeveloperPanel)return;
  const FLinearColor Gold(.75,.67,.46),White(.8,.85,.82);
  DrawRect(Gold,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
- DrawText(TEXT("Ctrl+D / F1  ·  Панель разработчика"),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
+ DrawText(TEXT("Ctrl+D  ·  Панель разработчика"),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
  if(PC->ShowDiagnostics){
   DrawRect(FLinearColor(.015,.022,.021,.85),24,24,340,82);
   DrawText(FString::Printf(TEXT("%.0f FPS  |  %.1f ms"),1.f/FMath::Max(PC->FrameSeconds,.001f),PC->FrameSeconds*1000),Gold,36,34,GEngine->GetSmallFont());
