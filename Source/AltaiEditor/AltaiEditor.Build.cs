@@ -1,0 +1,2 @@
+using UnrealBuildTool;
+public class AltaiEditor: ModuleRules { public AltaiEditor(ReadOnlyTargetRules Target):base(Target) { PCHUsage=PCHUsageMode.UseExplicitOrSharedPCHs; PublicDependencyModuleNames.AddRange(new string[] { "Core","CoreUObject","Engine","AltaiCore","AltaiGameplay","AltaiPresentation","Altai","UnrealEd","UMG","UMGEditor","Slate","SlateCore","AssetTools","AssetRegistry","Kismet","KismetCompiler","EditorScriptingUtilities","Landscape","AltaiEnvironment","AnimGraph","BlueprintGraph" }); } }

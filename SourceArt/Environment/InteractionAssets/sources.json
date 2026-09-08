@@ -1,0 +1,17 @@
+{
+  "treasure_chest": {
+    "source": "https://polyhaven.com/a/treasure_chest",
+    "license": "CC0",
+    "format": "glTF 2K"
+  },
+  "vintage_wooden_drawer_01": {
+    "source": "https://polyhaven.com/a/vintage_wooden_drawer_01",
+    "license": "CC0",
+    "format": "glTF 2K"
+  },
+  "large_castle_door": {
+    "source": "https://polyhaven.com/a/large_castle_door",
+    "license": "CC0",
+    "format": "glTF 2K"
+  }
+}

@@ -1,0 +1,964 @@
+{
+  "Diffuse": {
+    "8k": {
+      "jpg": {
+        "size": 8895548,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.jpg",
+        "md5": "005e4ff6c7691a62f13664de1d7610e9"
+      },
+      "png": {
+        "size": 68661798,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.png",
+        "md5": "280f143d9ac4af08ea95b498a885ec00"
+      },
+      "exr": {
+        "size": 73118367,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.exr",
+        "md5": "be6cea2f688e0165f3f8dca2172e91bb"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 2270543,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.jpg",
+        "md5": "555188a534b8b141c9f3bfc6ca6b56aa"
+      },
+      "png": {
+        "size": 16776264,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.png",
+        "md5": "620ba1aa2a2275549a2e333c217334eb"
+      },
+      "exr": {
+        "size": 17041074,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.exr",
+        "md5": "3c9c0139711cf05aa87e0d6be8d2b7f9"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 665209,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.jpg",
+        "md5": "13f0b31f4228157d67295f00a748a61a"
+      },
+      "png": {
+        "size": 4251633,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.png",
+        "md5": "7bbf48b5e2ce769095f691cf8eb6574a"
+      },
+      "exr": {
+        "size": 4630863,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.exr",
+        "md5": "3eeaf62efa0cbea7969f8494205ba012"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 203606,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.jpg",
+        "md5": "12ae392aca6e5b6d93e03452e463e210"
+      },
+      "png": {
+        "size": 1190561,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.png",
+        "md5": "4e22b8b680c0895bcc636aa4cf78f1e5"
+      },
+      "exr": {
+        "size": 1344158,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.exr",
+        "md5": "bfa10957a9683c1ea1f20aaa534a4ac3"
+      }
+    }
+  },
+  "nor_dx": {
+    "8k": {
+      "jpg": {
+        "size": 6395059,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_8k.jpg",
+        "md5": "179cdf04ced20ba11c3a3b30b420f5f2"
+      },
+      "png": {
+        "size": 43554869,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_8k.png",
+        "md5": "247e5dc85b0bf721c93177c64c3f1835"
+      },
+      "exr": {
+        "size": 49758352,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_8k.exr",
+        "md5": "d0d0546cba8b546dc6ac7c9d5830ba01"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 1818009,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_4k.jpg",
+        "md5": "2db24aadf8b8a9a5d6b20073aa53cc3a"
+      },
+      "png": {
+        "size": 12619112,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_4k.png",
+        "md5": "fa07755dcdaa7ac390d3584a34953550"
+      },
+      "exr": {
+        "size": 14654670,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_4k.exr",
+        "md5": "b1c078b630bf964259ce8fe9bb31d13b"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 524999,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_2k.jpg",
+        "md5": "cd1ad70a0d642f189d36cafe2d468f57"
+      },
+      "png": {
+        "size": 3478406,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_2k.png",
+        "md5": "a20f8d1a93cf66d240f964c49cb4f127"
+      },
+      "exr": {
+        "size": 4249733,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_2k.exr",
+        "md5": "e0167734414a5058c29f6bc413a56d9a"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 155321,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_1k.jpg",
+        "md5": "1a6df7a91e218658a77e04aa431d75ba"
+      },
+      "png": {
+        "size": 992984,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_1k.png",
+        "md5": "5b3fe89f43c8edb0f8b4f60d0fa007d9"
+      },
+      "exr": {
+        "size": 1161421,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_dx_1k.exr",
+        "md5": "d7f27d5b136c1e9fc96fa85489bb78f6"
+      }
+    }
+  },
+  "nor_gl": {
+    "8k": {
+      "jpg": {
+        "size": 6395270,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.jpg",
+        "md5": "f68b2704d2c57cd68ed2f5d6a123240d"
+      },
+      "png": {
+        "size": 43577389,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.png",
+        "md5": "c4e081a78faa05a7126ee2da8b932f1c"
+      },
+      "exr": {
+        "size": 49764388,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.exr",
+        "md5": "177c17a65271b52ebb67081e7f50d180"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 1819217,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.jpg",
+        "md5": "2bdb3bb1c55c086b8aa49f54326c8972"
+      },
+      "png": {
+        "size": 12613846,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.png",
+        "md5": "1bc65fcdf8530bbc624bdad2ccb127f2"
+      },
+      "exr": {
+        "size": 14649783,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.exr",
+        "md5": "94e34083aa350eaf886bc0f9cf7cbc82"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 524682,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.jpg",
+        "md5": "5b05d575f262ab36223c1a7fc59af97f"
+      },
+      "png": {
+        "size": 3465671,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.png",
+        "md5": "16d593bd54397e94b3f4642664e93f9b"
+      },
+      "exr": {
+        "size": 4240242,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.exr",
+        "md5": "3021b3cafe06b330da7cfe05b4be42ef"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 154793,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.jpg",
+        "md5": "4b8de5de7ea58ba0696c2e9b5747e2cc"
+      },
+      "png": {
+        "size": 980110,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.png",
+        "md5": "c92bf401ce076128c7b02198eea347ff"
+      },
+      "exr": {
+        "size": 1151642,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.exr",
+        "md5": "7d98eb12aff387d5c2cae6596241358c"
+      }
+    }
+  },
+  "blend": {
+    "8k": {
+      "blend": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_nor_gl_8k.exr": {
+            "size": 49764388,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.exr",
+            "md5": "177c17a65271b52ebb67081e7f50d180"
+          },
+          "textures/vintage_wooden_drawer_01_diff_8k.jpg": {
+            "size": 8895548,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.jpg",
+            "md5": "005e4ff6c7691a62f13664de1d7610e9"
+          },
+          "textures/vintage_wooden_drawer_01_rough_8k.jpg": {
+            "size": 7733036,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_8k.jpg",
+            "md5": "b0bd238c26f8dd1c599382d29c1ae014"
+          },
+          "textures/vintage_wooden_drawer_01_metal_8k.exr": {
+            "size": 221892,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_8k.exr",
+            "md5": "75293145c08b6c6c5cf58cb3dae34f5f"
+          }
+        },
+        "size": 326980,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_8k.blend",
+        "md5": "2c84305c80e34edd8ca651e4d83f5ea4"
+      }
+    },
+    "4k": {
+      "blend": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_rough_4k.jpg": {
+            "size": 2174562,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_4k.jpg",
+            "md5": "a7ff49ebb749293b92c497ca90901860"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_4k.exr": {
+            "size": 14649783,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.exr",
+            "md5": "94e34083aa350eaf886bc0f9cf7cbc82"
+          },
+          "textures/vintage_wooden_drawer_01_diff_4k.jpg": {
+            "size": 2270543,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.jpg",
+            "md5": "555188a534b8b141c9f3bfc6ca6b56aa"
+          },
+          "textures/vintage_wooden_drawer_01_metal_4k.exr": {
+            "size": 99799,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_4k.exr",
+            "md5": "edda862c902eda822519fbaa0607eec3"
+          }
+        },
+        "size": 326927,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_4k.blend",
+        "md5": "93dd515fb824c6a7154782fd4e1fc446"
+      }
+    },
+    "2k": {
+      "blend": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_metal_2k.exr": {
+            "size": 49286,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_2k.exr",
+            "md5": "5efd864e3f81f455250bbfc2b1a771f0"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_2k.exr": {
+            "size": 4240242,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.exr",
+            "md5": "3021b3cafe06b330da7cfe05b4be42ef"
+          },
+          "textures/vintage_wooden_drawer_01_diff_2k.jpg": {
+            "size": 665209,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.jpg",
+            "md5": "13f0b31f4228157d67295f00a748a61a"
+          },
+          "textures/vintage_wooden_drawer_01_rough_2k.jpg": {
+            "size": 651384,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_2k.jpg",
+            "md5": "43ec974a6c596e73028a95a8fe600fcc"
+          }
+        },
+        "size": 326739,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_2k.blend",
+        "md5": "eea253e5405c10a6aae25ed087e48bb7"
+      }
+    },
+    "1k": {
+      "blend": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_rough_1k.jpg": {
+            "size": 194465,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_1k.jpg",
+            "md5": "50f5fe11a4d4cb63e519726737302bed"
+          },
+          "textures/vintage_wooden_drawer_01_metal_1k.exr": {
+            "size": 25611,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_1k.exr",
+            "md5": "ed463091c9b2c30ab343dc149b6ae94e"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_1k.exr": {
+            "size": 1151642,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.exr",
+            "md5": "7d98eb12aff387d5c2cae6596241358c"
+          },
+          "textures/vintage_wooden_drawer_01_diff_1k.jpg": {
+            "size": 203606,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.jpg",
+            "md5": "12ae392aca6e5b6d93e03452e463e210"
+          }
+        },
+        "size": 326776,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_1k.blend",
+        "md5": "7d9db6f239dbce2b8a057a5c2ed38825"
+      }
+    }
+  },
+  "gltf": {
+    "8k": {
+      "gltf": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_diff_8k.jpg": {
+            "size": 8895548,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.jpg",
+            "md5": "005e4ff6c7691a62f13664de1d7610e9"
+          },
+          "textures/vintage_wooden_drawer_01_arm_8k.jpg": {
+            "size": 7288874,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_8k.jpg",
+            "md5": "3a0bd5ac5d9474891e9ba50a5dbc8900"
+          },
+          "vintage_wooden_drawer_01.bin": {
+            "size": 189056,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01.bin",
+            "md5": "efa2b55728ce87203a878d24597c2f0c"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_8k.jpg": {
+            "size": 6395270,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.jpg",
+            "md5": "f68b2704d2c57cd68ed2f5d6a123240d"
+          }
+        },
+        "size": 11491,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_8k.gltf",
+        "md5": "b9e241f74363001e5c35dc5a2a542e77"
+      }
+    },
+    "4k": {
+      "gltf": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_arm_4k.jpg": {
+            "size": 2132909,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_4k.jpg",
+            "md5": "74dc172ed40606c3f8cf3a50de087dc3"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_4k.jpg": {
+            "size": 1819217,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.jpg",
+            "md5": "2bdb3bb1c55c086b8aa49f54326c8972"
+          },
+          "textures/vintage_wooden_drawer_01_diff_4k.jpg": {
+            "size": 2270543,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.jpg",
+            "md5": "555188a534b8b141c9f3bfc6ca6b56aa"
+          },
+          "vintage_wooden_drawer_01.bin": {
+            "size": 189056,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01.bin",
+            "md5": "efa2b55728ce87203a878d24597c2f0c"
+          }
+        },
+        "size": 11491,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_4k.gltf",
+        "md5": "6f0fe1098eedcc34e19be56554e17536"
+      }
+    },
+    "2k": {
+      "gltf": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_arm_2k.jpg": {
+            "size": 654363,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_2k.jpg",
+            "md5": "7ac0dc632f39573680c8273e9b292cf6"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_2k.jpg": {
+            "size": 524682,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.jpg",
+            "md5": "5b05d575f262ab36223c1a7fc59af97f"
+          },
+          "textures/vintage_wooden_drawer_01_diff_2k.jpg": {
+            "size": 665209,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.jpg",
+            "md5": "13f0b31f4228157d67295f00a748a61a"
+          },
+          "vintage_wooden_drawer_01.bin": {
+            "size": 189056,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01.bin",
+            "md5": "efa2b55728ce87203a878d24597c2f0c"
+          }
+        },
+        "size": 11491,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_2k.gltf",
+        "md5": "5751aa7afbf76ae9cb0aa5af2e3ff595"
+      }
+    },
+    "1k": {
+      "gltf": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_nor_gl_1k.jpg": {
+            "size": 154793,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.jpg",
+            "md5": "4b8de5de7ea58ba0696c2e9b5747e2cc"
+          },
+          "vintage_wooden_drawer_01.bin": {
+            "size": 189056,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01.bin",
+            "md5": "efa2b55728ce87203a878d24597c2f0c"
+          },
+          "textures/vintage_wooden_drawer_01_arm_1k.jpg": {
+            "size": 200855,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_1k.jpg",
+            "md5": "307b1142b7769c22334adac0cf28e306"
+          },
+          "textures/vintage_wooden_drawer_01_diff_1k.jpg": {
+            "size": 203606,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.jpg",
+            "md5": "12ae392aca6e5b6d93e03452e463e210"
+          }
+        },
+        "size": 11491,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_1k.gltf",
+        "md5": "bb2f412c8e0633179a29f442d396a581"
+      }
+    }
+  },
+  "usd": {
+    "8k": {
+      "usd": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_nor_gl_8k.exr": {
+            "size": 49764388,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.exr",
+            "md5": "177c17a65271b52ebb67081e7f50d180"
+          },
+          "textures/vintage_wooden_drawer_01_diff_8k.jpg": {
+            "size": 8895548,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.jpg",
+            "md5": "005e4ff6c7691a62f13664de1d7610e9"
+          },
+          "textures/vintage_wooden_drawer_01_rough_8k.jpg": {
+            "size": 7733036,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_8k.jpg",
+            "md5": "b0bd238c26f8dd1c599382d29c1ae014"
+          },
+          "textures/vintage_wooden_drawer_01_metal_8k.exr": {
+            "size": 221892,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_8k.exr",
+            "md5": "75293145c08b6c6c5cf58cb3dae34f5f"
+          }
+        },
+        "size": 270428,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_8k.usdc",
+        "md5": "4b4041c1803e454ecc8981815c94879a"
+      }
+    },
+    "4k": {
+      "usd": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_rough_4k.jpg": {
+            "size": 2174562,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_4k.jpg",
+            "md5": "a7ff49ebb749293b92c497ca90901860"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_4k.exr": {
+            "size": 14649783,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.exr",
+            "md5": "94e34083aa350eaf886bc0f9cf7cbc82"
+          },
+          "textures/vintage_wooden_drawer_01_diff_4k.jpg": {
+            "size": 2270543,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.jpg",
+            "md5": "555188a534b8b141c9f3bfc6ca6b56aa"
+          },
+          "textures/vintage_wooden_drawer_01_metal_4k.exr": {
+            "size": 99799,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_4k.exr",
+            "md5": "edda862c902eda822519fbaa0607eec3"
+          }
+        },
+        "size": 270428,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_4k.usdc",
+        "md5": "580aca6ca6e76e931c65c8d0c283ad0c"
+      }
+    },
+    "2k": {
+      "usd": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_metal_2k.exr": {
+            "size": 49286,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_2k.exr",
+            "md5": "5efd864e3f81f455250bbfc2b1a771f0"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_2k.exr": {
+            "size": 4240242,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.exr",
+            "md5": "3021b3cafe06b330da7cfe05b4be42ef"
+          },
+          "textures/vintage_wooden_drawer_01_diff_2k.jpg": {
+            "size": 665209,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.jpg",
+            "md5": "13f0b31f4228157d67295f00a748a61a"
+          },
+          "textures/vintage_wooden_drawer_01_rough_2k.jpg": {
+            "size": 651384,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_2k.jpg",
+            "md5": "43ec974a6c596e73028a95a8fe600fcc"
+          }
+        },
+        "size": 270428,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_2k.usdc",
+        "md5": "79208af9568a4126b545db09a9f67088"
+      }
+    },
+    "1k": {
+      "usd": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_rough_1k.jpg": {
+            "size": 194465,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_1k.jpg",
+            "md5": "50f5fe11a4d4cb63e519726737302bed"
+          },
+          "textures/vintage_wooden_drawer_01_metal_1k.exr": {
+            "size": 25611,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_1k.exr",
+            "md5": "ed463091c9b2c30ab343dc149b6ae94e"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_1k.exr": {
+            "size": 1151642,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.exr",
+            "md5": "7d98eb12aff387d5c2cae6596241358c"
+          },
+          "textures/vintage_wooden_drawer_01_diff_1k.jpg": {
+            "size": 203606,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.jpg",
+            "md5": "12ae392aca6e5b6d93e03452e463e210"
+          }
+        },
+        "size": 270428,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_1k.usdc",
+        "md5": "a9a0d052bb49d5a0dc415011521395a6"
+      }
+    }
+  },
+  "Metal": {
+    "8k": {
+      "jpg": {
+        "size": 914595,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_8k.jpg",
+        "md5": "f271c24844d03278f3ae2957af8e418d"
+      },
+      "png": {
+        "size": 108989,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_8k.png",
+        "md5": "53dc6e90f299e09310a4e8c7232b39e0"
+      },
+      "exr": {
+        "size": 221892,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_8k.exr",
+        "md5": "75293145c08b6c6c5cf58cb3dae34f5f"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 257296,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_4k.jpg",
+        "md5": "b3c01d416c13a49626a89ca145670285"
+      },
+      "png": {
+        "size": 45599,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_4k.png",
+        "md5": "6cd88a25360de873c21a125fab85456a"
+      },
+      "exr": {
+        "size": 99799,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_4k.exr",
+        "md5": "edda862c902eda822519fbaa0607eec3"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 79176,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_2k.jpg",
+        "md5": "47cfa1ad69da4252bf929306e8ab9d04"
+      },
+      "png": {
+        "size": 21249,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_2k.png",
+        "md5": "09d2972c694b3a8ec80311937a051690"
+      },
+      "exr": {
+        "size": 49286,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_2k.exr",
+        "md5": "5efd864e3f81f455250bbfc2b1a771f0"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 27399,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_1k.jpg",
+        "md5": "506c2a7bcd12a63dd83aaca634cc4daa"
+      },
+      "png": {
+        "size": 10758,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_1k.png",
+        "md5": "03fe4c30459eaf88bae82983a816333c"
+      },
+      "exr": {
+        "size": 25611,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_1k.exr",
+        "md5": "ed463091c9b2c30ab343dc149b6ae94e"
+      }
+    }
+  },
+  "fbx": {
+    "8k": {
+      "fbx": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_nor_gl_8k.exr": {
+            "size": 49764388,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_8k.exr",
+            "md5": "177c17a65271b52ebb67081e7f50d180"
+          },
+          "textures/vintage_wooden_drawer_01_diff_8k.jpg": {
+            "size": 8895548,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_8k.jpg",
+            "md5": "005e4ff6c7691a62f13664de1d7610e9"
+          },
+          "textures/vintage_wooden_drawer_01_rough_8k.jpg": {
+            "size": 7733036,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_8k.jpg",
+            "md5": "b0bd238c26f8dd1c599382d29c1ae014"
+          },
+          "textures/vintage_wooden_drawer_01_metal_8k.exr": {
+            "size": 221892,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_8k.exr",
+            "md5": "75293145c08b6c6c5cf58cb3dae34f5f"
+          }
+        },
+        "size": 201356,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_8k.fbx",
+        "md5": "5846bc27ae71459262addf3a85c23d64"
+      }
+    },
+    "4k": {
+      "fbx": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_rough_4k.jpg": {
+            "size": 2174562,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_4k.jpg",
+            "md5": "a7ff49ebb749293b92c497ca90901860"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_4k.exr": {
+            "size": 14649783,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_4k.exr",
+            "md5": "94e34083aa350eaf886bc0f9cf7cbc82"
+          },
+          "textures/vintage_wooden_drawer_01_diff_4k.jpg": {
+            "size": 2270543,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_4k.jpg",
+            "md5": "555188a534b8b141c9f3bfc6ca6b56aa"
+          },
+          "textures/vintage_wooden_drawer_01_metal_4k.exr": {
+            "size": 99799,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_4k.exr",
+            "md5": "edda862c902eda822519fbaa0607eec3"
+          }
+        },
+        "size": 201356,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_4k.fbx",
+        "md5": "2ec3c2139333d91c45391d76197cd111"
+      }
+    },
+    "2k": {
+      "fbx": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_metal_2k.exr": {
+            "size": 49286,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_2k.exr",
+            "md5": "5efd864e3f81f455250bbfc2b1a771f0"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_2k.exr": {
+            "size": 4240242,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_2k.exr",
+            "md5": "3021b3cafe06b330da7cfe05b4be42ef"
+          },
+          "textures/vintage_wooden_drawer_01_diff_2k.jpg": {
+            "size": 665209,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_2k.jpg",
+            "md5": "13f0b31f4228157d67295f00a748a61a"
+          },
+          "textures/vintage_wooden_drawer_01_rough_2k.jpg": {
+            "size": 651384,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_2k.jpg",
+            "md5": "43ec974a6c596e73028a95a8fe600fcc"
+          }
+        },
+        "size": 201356,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_2k.fbx",
+        "md5": "c700d02b2797ca4b54d07213f536e856"
+      }
+    },
+    "1k": {
+      "fbx": {
+        "include": {
+          "textures/vintage_wooden_drawer_01_rough_1k.jpg": {
+            "size": 194465,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_1k.jpg",
+            "md5": "50f5fe11a4d4cb63e519726737302bed"
+          },
+          "textures/vintage_wooden_drawer_01_metal_1k.exr": {
+            "size": 25611,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_metal_1k.exr",
+            "md5": "ed463091c9b2c30ab343dc149b6ae94e"
+          },
+          "textures/vintage_wooden_drawer_01_nor_gl_1k.exr": {
+            "size": 1151642,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_nor_gl_1k.exr",
+            "md5": "7d98eb12aff387d5c2cae6596241358c"
+          },
+          "textures/vintage_wooden_drawer_01_diff_1k.jpg": {
+            "size": 203606,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_diff_1k.jpg",
+            "md5": "12ae392aca6e5b6d93e03452e463e210"
+          }
+        },
+        "size": 201356,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_1k.fbx",
+        "md5": "4a97a288e0fb4172d572c24f4c07b335"
+      }
+    }
+  },
+  "arm": {
+    "8k": {
+      "jpg": {
+        "size": 7288874,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_8k.jpg",
+        "md5": "3a0bd5ac5d9474891e9ba50a5dbc8900"
+      },
+      "png": {
+        "size": 54436891,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_8k.png",
+        "md5": "281d4801925ec9e7b3565ff90ecb0a10"
+      },
+      "exr": {
+        "size": 69799077,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_8k.exr",
+        "md5": "09aeb99985d79a80a5a2d3e0f406ce5e"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 2132909,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_4k.jpg",
+        "md5": "74dc172ed40606c3f8cf3a50de087dc3"
+      },
+      "png": {
+        "size": 14204086,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_4k.png",
+        "md5": "48dc83d4cc3a5b8fefe4627afa96c1e0"
+      },
+      "exr": {
+        "size": 18048557,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_4k.exr",
+        "md5": "af880fe686710198a3ac18e5425c7319"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 654363,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_2k.jpg",
+        "md5": "7ac0dc632f39573680c8273e9b292cf6"
+      },
+      "png": {
+        "size": 3572055,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_2k.png",
+        "md5": "3a8db1ab0f5f992636f54e26143f1641"
+      },
+      "exr": {
+        "size": 5120429,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_2k.exr",
+        "md5": "79bd79ceee9f7f87026996a95626a09b"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 200855,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_1k.jpg",
+        "md5": "307b1142b7769c22334adac0cf28e306"
+      },
+      "png": {
+        "size": 984577,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_1k.png",
+        "md5": "bfe934f97f76101db2842489f9acdab9"
+      },
+      "exr": {
+        "size": 1476309,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_arm_1k.exr",
+        "md5": "f223172c5eeb75b9dcaeae488f8138e1"
+      }
+    }
+  },
+  "Rough": {
+    "8k": {
+      "jpg": {
+        "size": 7733036,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_8k.jpg",
+        "md5": "b0bd238c26f8dd1c599382d29c1ae014"
+      },
+      "png": {
+        "size": 24462051,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_8k.png",
+        "md5": "e0d5cfefde561255efa8acd96f4e260a"
+      },
+      "exr": {
+        "size": 36757660,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_8k.exr",
+        "md5": "2df538c4bf3cc1084b8286a415e0c7b4"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 2174562,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_4k.jpg",
+        "md5": "a7ff49ebb749293b92c497ca90901860"
+      },
+      "png": {
+        "size": 6368799,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_4k.png",
+        "md5": "58a6f7d75fd4326140d1b068420d9d22"
+      },
+      "exr": {
+        "size": 9907040,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_4k.exr",
+        "md5": "98733451683e18afc42ae7b37d54974b"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 651384,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_2k.jpg",
+        "md5": "43ec974a6c596e73028a95a8fe600fcc"
+      },
+      "png": {
+        "size": 1757677,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_2k.png",
+        "md5": "9fb5c7ac70ae32c1e4d089859a4829c8"
+      },
+      "exr": {
+        "size": 2819975,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_2k.exr",
+        "md5": "c56b52e9e003e7d5b021f366d9786fa0"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 194465,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_1k.jpg",
+        "md5": "50f5fe11a4d4cb63e519726737302bed"
+      },
+      "png": {
+        "size": 498416,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_1k.png",
+        "md5": "25bbfc8b4dac5c48aca87a2b0bdb03b2"
+      },
+      "exr": {
+        "size": 848475,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_rough_1k.exr",
+        "md5": "f1f416235dd962fca99b828989a58d8a"
+      }
+    }
+  },
+  "AO": {
+    "8k": {
+      "jpg": {
+        "size": 4799395,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_8k.jpg",
+        "md5": "eb27457223a42148aad29e9e0197cea0"
+      },
+      "png": {
+        "size": 22596982,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_8k.png",
+        "md5": "d551e5d68b3c4646bcbb49538e6bd2a7"
+      },
+      "exr": {
+        "size": 32503687,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_8k.exr",
+        "md5": "6ee02a0802d0d80ec2ca5c2b218e7927"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 1091132,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_4k.jpg",
+        "md5": "47697c46f5bf91003a20593a03cd1c2d"
+      },
+      "png": {
+        "size": 5359282,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_4k.png",
+        "md5": "9a0e277d12a76c7ef626cd6f442fff6f"
+      },
+      "exr": {
+        "size": 8329578,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_4k.exr",
+        "md5": "2d8b77b92607e582c1cdd36bf3488a7c"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 387410,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_2k.jpg",
+        "md5": "00e38cafdd8caa160f1b4c5aa4cde2f9"
+      },
+      "png": {
+        "size": 1195016,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_2k.png",
+        "md5": "23635299a78001eb1d24e34533391ce2"
+      },
+      "exr": {
+        "size": 2108953,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_2k.exr",
+        "md5": "25ff73ce51a5ba0333fd70b42f7b6e10"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 138692,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_1k.jpg",
+        "md5": "62da78d488f4b9d936264c4c4a92a3fd"
+      },
+      "png": {
+        "size": 315248,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_1k.png",
+        "md5": "a232b593c05350ac70d957e7124ef57e"
+      },
+      "exr": {
+        "size": 623852,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/vintage_wooden_drawer_01/vintage_wooden_drawer_01_ao_1k.exr",
+        "md5": "d0e19097fd501ea77fe38802265b576b"
+      }
+    }
+  }
+}

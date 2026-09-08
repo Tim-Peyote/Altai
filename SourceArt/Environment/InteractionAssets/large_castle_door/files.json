@@ -1,0 +1,729 @@
+{
+  "Diffuse": {
+    "4k": {
+      "jpg": {
+        "size": 12106778,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_diff_4k.jpg",
+        "md5": "ba6bbeffc53a0aa0b1b118ace608ed1e"
+      },
+      "png": {
+        "size": 58948388,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_diff_4k.png",
+        "md5": "d1c20b7032a752bef5919ee98a9f0bd5"
+      },
+      "exr": {
+        "size": 23328904,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_diff_4k.exr",
+        "md5": "97c452cda0570f2fe9ea0e2768ebf7b2"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 3105682,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_diff_2k.jpg",
+        "md5": "030d6cb9b510fc5686a67c670650f06c"
+      },
+      "png": {
+        "size": 18642400,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_diff_2k.png",
+        "md5": "4a4769bbb903eb7bdbb40ff704cbb042"
+      },
+      "exr": {
+        "size": 5310027,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_diff_2k.exr",
+        "md5": "4d6c3c2cb4162befdfbf72874db7f8ec"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 803253,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_diff_1k.jpg",
+        "md5": "641c090895f68f3be02f8db278385174"
+      },
+      "png": {
+        "size": 5173280,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_diff_1k.png",
+        "md5": "c222ed28c46a21fa909887c986016368"
+      },
+      "exr": {
+        "size": 1367124,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_diff_1k.exr",
+        "md5": "31802a872dd3534b3f0a669ffe65354b"
+      }
+    }
+  },
+  "nor_dx": {
+    "4k": {
+      "jpg": {
+        "size": 18789414,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_nor_dx_4k.jpg",
+        "md5": "d216c795ed2cbccdb2fb2505052fbfae"
+      },
+      "png": {
+        "size": 68957879,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_nor_dx_4k.png",
+        "md5": "10547172bb28ba00d4e39e2f9f6598be"
+      },
+      "exr": {
+        "size": 37442761,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_nor_dx_4k.exr",
+        "md5": "214ce3fe740b0abdd1dccf22cc0427df"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 4353560,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_nor_dx_2k.jpg",
+        "md5": "2cbc1a0899ff2643dd3345ad17c99091"
+      },
+      "png": {
+        "size": 19466368,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_nor_dx_2k.png",
+        "md5": "5198b529b96e0a9881f7162697a3217f"
+      },
+      "exr": {
+        "size": 9156714,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_nor_dx_2k.exr",
+        "md5": "b675f8373abd683a8c2f6a4e02a961cd"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 1029907,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_nor_dx_1k.jpg",
+        "md5": "6d79f58a3c1ac1e04445935ec585f263"
+      },
+      "png": {
+        "size": 5250874,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_nor_dx_1k.png",
+        "md5": "8c33e4683e01e4aacc7d217d581d453f"
+      },
+      "exr": {
+        "size": 2262312,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_nor_dx_1k.exr",
+        "md5": "8fb96b71f8abc01fd904cfcac9ba7835"
+      }
+    }
+  },
+  "nor_gl": {
+    "4k": {
+      "jpg": {
+        "size": 18078086,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_nor_gl_4k.jpg",
+        "md5": "22f88b49fcd07b466a1add2ecf8912bd"
+      },
+      "png": {
+        "size": 68956788,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_nor_gl_4k.png",
+        "md5": "7c88c8dbd0fa254fa087effb86264fc0"
+      },
+      "exr": {
+        "size": 37489195,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_nor_gl_4k.exr",
+        "md5": "5dd448ff97a11c109f0eb01e83b37a2a"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 4281351,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_nor_gl_2k.jpg",
+        "md5": "915c45399d96e5c8617eb78685fb02a1"
+      },
+      "png": {
+        "size": 19466439,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_nor_gl_2k.png",
+        "md5": "9df7fac5219749766b7425049fb612fd"
+      },
+      "exr": {
+        "size": 9173296,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_nor_gl_2k.exr",
+        "md5": "4aacbbaa8bd1f6321c956b72160cf02e"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 1023095,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_nor_gl_1k.jpg",
+        "md5": "4a0e452157d95c0d18a2f79429ec471d"
+      },
+      "png": {
+        "size": 5250863,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_nor_gl_1k.png",
+        "md5": "010c5468e52da84dfea58cc1164f0f30"
+      },
+      "exr": {
+        "size": 2270723,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_nor_gl_1k.exr",
+        "md5": "8c075e903f4fcc848f3bc3d72ff4eb2f"
+      }
+    }
+  },
+  "blend": {
+    "4k": {
+      "blend": {
+        "include": {
+          "textures/large_castle_door_diff_4k.jpg": {
+            "size": 12106778,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_diff_4k.jpg",
+            "md5": "ba6bbeffc53a0aa0b1b118ace608ed1e"
+          },
+          "textures/large_castle_door_metal_4k.exr": {
+            "size": 1050980,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_metal_4k.exr",
+            "md5": "ea80f1b8c9db0752a137900f7a2c89f9"
+          },
+          "textures/large_castle_door_rough_4k.exr": {
+            "size": 14316817,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_rough_4k.exr",
+            "md5": "ff933bce00542890fd03d160f5241c0f"
+          },
+          "textures/large_castle_door_nor_gl_4k.exr": {
+            "size": 37489195,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_nor_gl_4k.exr",
+            "md5": "5dd448ff97a11c109f0eb01e83b37a2a"
+          }
+        },
+        "size": 463125,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/4k/large_castle_door/large_castle_door_4k.blend",
+        "md5": "f0f8bfe2cd89027f83bf840d93461c01"
+      }
+    },
+    "2k": {
+      "blend": {
+        "include": {
+          "textures/large_castle_door_diff_2k.jpg": {
+            "size": 3105682,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_diff_2k.jpg",
+            "md5": "030d6cb9b510fc5686a67c670650f06c"
+          },
+          "textures/large_castle_door_metal_2k.exr": {
+            "size": 435041,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_metal_2k.exr",
+            "md5": "fa41053b3daed1713fe83f5e141e4884"
+          },
+          "textures/large_castle_door_nor_gl_2k.exr": {
+            "size": 9173296,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_nor_gl_2k.exr",
+            "md5": "4aacbbaa8bd1f6321c956b72160cf02e"
+          },
+          "textures/large_castle_door_rough_2k.exr": {
+            "size": 4452664,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_rough_2k.exr",
+            "md5": "786df7838e7dd5569fed017409a1e9ca"
+          }
+        },
+        "size": 449041,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/large_castle_door/large_castle_door_2k.blend",
+        "md5": "9b554df57441c247eefda8781d5cc86b"
+      }
+    },
+    "1k": {
+      "blend": {
+        "include": {
+          "textures/large_castle_door_nor_gl_1k.exr": {
+            "size": 2270723,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_nor_gl_1k.exr",
+            "md5": "8c075e903f4fcc848f3bc3d72ff4eb2f"
+          },
+          "textures/large_castle_door_metal_1k.exr": {
+            "size": 162854,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_metal_1k.exr",
+            "md5": "91e906985c0f2a09f5aac9265f82a326"
+          },
+          "textures/large_castle_door_diff_1k.jpg": {
+            "size": 803253,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_diff_1k.jpg",
+            "md5": "641c090895f68f3be02f8db278385174"
+          },
+          "textures/large_castle_door_rough_1k.exr": {
+            "size": 1231587,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_rough_1k.exr",
+            "md5": "3c4a8b51bd15dd847bd778993b952c6a"
+          }
+        },
+        "size": 459775,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/large_castle_door/large_castle_door_1k.blend",
+        "md5": "bfaf19375fa99353c90664aca2395321"
+      }
+    }
+  },
+  "gltf": {
+    "4k": {
+      "gltf": {
+        "include": {
+          "textures/large_castle_door_nor_gl_4k.jpg": {
+            "size": 18078086,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_nor_gl_4k.jpg",
+            "md5": "22f88b49fcd07b466a1add2ecf8912bd"
+          },
+          "large_castle_door.bin": {
+            "size": 422436,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/large_castle_door/large_castle_door.bin",
+            "md5": "ed0cee2626677b1a520de7bd868d09cc"
+          },
+          "textures/large_castle_door_diff_4k.jpg": {
+            "size": 12106778,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_diff_4k.jpg",
+            "md5": "ba6bbeffc53a0aa0b1b118ace608ed1e"
+          },
+          "textures/large_castle_door_arm_4k.jpg": {
+            "size": 13843417,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_arm_4k.jpg",
+            "md5": "9291c781b0b336236b8807901e12783f"
+          }
+        },
+        "size": 6111,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/large_castle_door/large_castle_door_4k.gltf",
+        "md5": "3abd0c23643758b5508027147c54dbd8"
+      }
+    },
+    "2k": {
+      "gltf": {
+        "include": {
+          "textures/large_castle_door_diff_2k.jpg": {
+            "size": 3105682,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_diff_2k.jpg",
+            "md5": "030d6cb9b510fc5686a67c670650f06c"
+          },
+          "large_castle_door.bin": {
+            "size": 422436,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/large_castle_door/large_castle_door.bin",
+            "md5": "ed0cee2626677b1a520de7bd868d09cc"
+          },
+          "textures/large_castle_door_nor_gl_2k.jpg": {
+            "size": 4281351,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_nor_gl_2k.jpg",
+            "md5": "915c45399d96e5c8617eb78685fb02a1"
+          },
+          "textures/large_castle_door_arm_2k.jpg": {
+            "size": 3723833,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_arm_2k.jpg",
+            "md5": "5b31d5e2057371f82158bd56dbe19588"
+          }
+        },
+        "size": 6111,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/large_castle_door/large_castle_door_2k.gltf",
+        "md5": "301320484d7cceb4176297d3f510e929"
+      }
+    },
+    "1k": {
+      "gltf": {
+        "include": {
+          "large_castle_door.bin": {
+            "size": 422436,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/large_castle_door/large_castle_door.bin",
+            "md5": "ed0cee2626677b1a520de7bd868d09cc"
+          },
+          "textures/large_castle_door_nor_gl_1k.jpg": {
+            "size": 1023095,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_nor_gl_1k.jpg",
+            "md5": "4a0e452157d95c0d18a2f79429ec471d"
+          },
+          "textures/large_castle_door_arm_1k.jpg": {
+            "size": 1016111,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_arm_1k.jpg",
+            "md5": "e742bcceba429ca946edc788dac922ff"
+          },
+          "textures/large_castle_door_diff_1k.jpg": {
+            "size": 803253,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_diff_1k.jpg",
+            "md5": "641c090895f68f3be02f8db278385174"
+          }
+        },
+        "size": 6111,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/large_castle_door/large_castle_door_1k.gltf",
+        "md5": "40c7debfb0e9f51826b294d642bc0bfe"
+      }
+    }
+  },
+  "usd": {
+    "4k": {
+      "usd": {
+        "include": {
+          "textures/large_castle_door_diff_4k.jpg": {
+            "size": 12106778,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_diff_4k.jpg",
+            "md5": "ba6bbeffc53a0aa0b1b118ace608ed1e"
+          },
+          "textures/large_castle_door_metal_4k.exr": {
+            "size": 1050980,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_metal_4k.exr",
+            "md5": "ea80f1b8c9db0752a137900f7a2c89f9"
+          },
+          "textures/large_castle_door_rough_4k.exr": {
+            "size": 14316817,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_rough_4k.exr",
+            "md5": "ff933bce00542890fd03d160f5241c0f"
+          },
+          "textures/large_castle_door_nor_gl_4k.exr": {
+            "size": 37489195,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_nor_gl_4k.exr",
+            "md5": "5dd448ff97a11c109f0eb01e83b37a2a"
+          }
+        },
+        "size": 625752,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/4k/large_castle_door/large_castle_door_4k.usdc",
+        "md5": "fdfc919b58dc4ea9ea275a1604a752e8"
+      }
+    },
+    "2k": {
+      "usd": {
+        "include": {
+          "textures/large_castle_door_diff_2k.jpg": {
+            "size": 3105682,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_diff_2k.jpg",
+            "md5": "030d6cb9b510fc5686a67c670650f06c"
+          },
+          "textures/large_castle_door_metal_2k.exr": {
+            "size": 435041,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_metal_2k.exr",
+            "md5": "fa41053b3daed1713fe83f5e141e4884"
+          },
+          "textures/large_castle_door_nor_gl_2k.exr": {
+            "size": 9173296,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_nor_gl_2k.exr",
+            "md5": "4aacbbaa8bd1f6321c956b72160cf02e"
+          },
+          "textures/large_castle_door_rough_2k.exr": {
+            "size": 4452664,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_rough_2k.exr",
+            "md5": "786df7838e7dd5569fed017409a1e9ca"
+          }
+        },
+        "size": 625752,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/2k/large_castle_door/large_castle_door_2k.usdc",
+        "md5": "09ec70e0daee7bfcca5b0effbf3dc8d4"
+      }
+    },
+    "1k": {
+      "usd": {
+        "include": {
+          "textures/large_castle_door_nor_gl_1k.exr": {
+            "size": 2270723,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_nor_gl_1k.exr",
+            "md5": "8c075e903f4fcc848f3bc3d72ff4eb2f"
+          },
+          "textures/large_castle_door_metal_1k.exr": {
+            "size": 162854,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_metal_1k.exr",
+            "md5": "91e906985c0f2a09f5aac9265f82a326"
+          },
+          "textures/large_castle_door_diff_1k.jpg": {
+            "size": 803253,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_diff_1k.jpg",
+            "md5": "641c090895f68f3be02f8db278385174"
+          },
+          "textures/large_castle_door_rough_1k.exr": {
+            "size": 1231587,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_rough_1k.exr",
+            "md5": "3c4a8b51bd15dd847bd778993b952c6a"
+          }
+        },
+        "size": 625752,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/1k/large_castle_door/large_castle_door_1k.usdc",
+        "md5": "59dbf30f898c6305106da0b4f5004b9c"
+      }
+    }
+  },
+  "Metal": {
+    "4k": {
+      "jpg": {
+        "size": 1275877,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_metal_4k.jpg",
+        "md5": "6f5d68610b072f6af83810f8163d1eb6"
+      },
+      "png": {
+        "size": 949066,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_metal_4k.png",
+        "md5": "2729a9cbb3af14e48d3f044840620dfb"
+      },
+      "exr": {
+        "size": 1050980,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_metal_4k.exr",
+        "md5": "ea80f1b8c9db0752a137900f7a2c89f9"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 414791,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_metal_2k.jpg",
+        "md5": "b73a77fcba8880af6bbf868ded7ae665"
+      },
+      "png": {
+        "size": 496797,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_metal_2k.png",
+        "md5": "b640b58ed1b3def1388be8a73c935fc1"
+      },
+      "exr": {
+        "size": 435041,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_metal_2k.exr",
+        "md5": "fa41053b3daed1713fe83f5e141e4884"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 141921,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_metal_1k.jpg",
+        "md5": "ee536ac8570b0f3958b842e0d7356fdd"
+      },
+      "png": {
+        "size": 186480,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_metal_1k.png",
+        "md5": "07210ee87e2f61b3920922f980cb25d3"
+      },
+      "exr": {
+        "size": 162854,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_metal_1k.exr",
+        "md5": "91e906985c0f2a09f5aac9265f82a326"
+      }
+    }
+  },
+  "arm": {
+    "4k": {
+      "jpg": {
+        "size": 13843417,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_arm_4k.jpg",
+        "md5": "9291c781b0b336236b8807901e12783f"
+      },
+      "png": {
+        "size": 37608888,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_arm_4k.png",
+        "md5": "a689ab8b028ed2758f2e1f46f3a53425"
+      },
+      "exr": {
+        "size": 27582696,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_arm_4k.exr",
+        "md5": "c5a1d57efbaa1602d79a44425c1296db"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 3723833,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_arm_2k.jpg",
+        "md5": "5b31d5e2057371f82158bd56dbe19588"
+      },
+      "png": {
+        "size": 12774622,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_arm_2k.png",
+        "md5": "a5d895b45e38237dae6e0da1835bc69e"
+      },
+      "exr": {
+        "size": 7489017,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_arm_2k.exr",
+        "md5": "c5d3228910984695af78c468938a268e"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 1016111,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_arm_1k.jpg",
+        "md5": "e742bcceba429ca946edc788dac922ff"
+      },
+      "png": {
+        "size": 3612176,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_arm_1k.png",
+        "md5": "c18f4723f4036380275850070021b4aa"
+      },
+      "exr": {
+        "size": 2074005,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_arm_1k.exr",
+        "md5": "d5bf3d0a39533d6e45a3f9d688b48990"
+      }
+    }
+  },
+  "fbx": {
+    "4k": {
+      "fbx": {
+        "include": {
+          "textures/large_castle_door_diff_4k.jpg": {
+            "size": 12106778,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_diff_4k.jpg",
+            "md5": "ba6bbeffc53a0aa0b1b118ace608ed1e"
+          },
+          "textures/large_castle_door_metal_4k.exr": {
+            "size": 1050980,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_metal_4k.exr",
+            "md5": "ea80f1b8c9db0752a137900f7a2c89f9"
+          },
+          "textures/large_castle_door_rough_4k.exr": {
+            "size": 14316817,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_rough_4k.exr",
+            "md5": "ff933bce00542890fd03d160f5241c0f"
+          },
+          "textures/large_castle_door_nor_gl_4k.exr": {
+            "size": 37489195,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_nor_gl_4k.exr",
+            "md5": "5dd448ff97a11c109f0eb01e83b37a2a"
+          }
+        },
+        "size": 404780,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/4k/large_castle_door/large_castle_door_4k.fbx",
+        "md5": "b5a13710c1dcc6564ca4fc159efd8fb9"
+      }
+    },
+    "2k": {
+      "fbx": {
+        "include": {
+          "textures/large_castle_door_diff_2k.jpg": {
+            "size": 3105682,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_diff_2k.jpg",
+            "md5": "030d6cb9b510fc5686a67c670650f06c"
+          },
+          "textures/large_castle_door_metal_2k.exr": {
+            "size": 435041,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_metal_2k.exr",
+            "md5": "fa41053b3daed1713fe83f5e141e4884"
+          },
+          "textures/large_castle_door_nor_gl_2k.exr": {
+            "size": 9173296,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_nor_gl_2k.exr",
+            "md5": "4aacbbaa8bd1f6321c956b72160cf02e"
+          },
+          "textures/large_castle_door_rough_2k.exr": {
+            "size": 4452664,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_rough_2k.exr",
+            "md5": "786df7838e7dd5569fed017409a1e9ca"
+          }
+        },
+        "size": 404780,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/2k/large_castle_door/large_castle_door_2k.fbx",
+        "md5": "9bc9447f7b9beaf3098c8a97a68a5d6b"
+      }
+    },
+    "1k": {
+      "fbx": {
+        "include": {
+          "textures/large_castle_door_nor_gl_1k.exr": {
+            "size": 2270723,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_nor_gl_1k.exr",
+            "md5": "8c075e903f4fcc848f3bc3d72ff4eb2f"
+          },
+          "textures/large_castle_door_metal_1k.exr": {
+            "size": 162854,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_metal_1k.exr",
+            "md5": "91e906985c0f2a09f5aac9265f82a326"
+          },
+          "textures/large_castle_door_diff_1k.jpg": {
+            "size": 803253,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_diff_1k.jpg",
+            "md5": "641c090895f68f3be02f8db278385174"
+          },
+          "textures/large_castle_door_rough_1k.exr": {
+            "size": 1231587,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_rough_1k.exr",
+            "md5": "3c4a8b51bd15dd847bd778993b952c6a"
+          }
+        },
+        "size": 404780,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/large_castle_door/large_castle_door_1k.fbx",
+        "md5": "ab461a13fb1955b6dee5b71b0ce9f3b8"
+      }
+    }
+  },
+  "AO": {
+    "4k": {
+      "jpg": {
+        "size": 3799558,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_ao_4k.jpg",
+        "md5": "78e7ba13e46ece2ff9c8e66a8abc5efd"
+      },
+      "png": {
+        "size": 14201642,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_ao_4k.png",
+        "md5": "9359302350153825f1fb3ba341e7896f"
+      },
+      "exr": {
+        "size": 7996071,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_ao_4k.exr",
+        "md5": "09ba7027249f4cd8f249200338ac0233"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 924908,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_ao_2k.jpg",
+        "md5": "267fdbb18d6f3684df1a133536ff1408"
+      },
+      "png": {
+        "size": 4342432,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_ao_2k.png",
+        "md5": "74b8bd49d8322a96f0bce7e8539e1080"
+      },
+      "exr": {
+        "size": 2477934,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_ao_2k.exr",
+        "md5": "c282c52b58b0f6b7320ef3167ee5caff"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 276144,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_ao_1k.jpg",
+        "md5": "5d1c865c1be9856eaebfcd0b3213ff59"
+      },
+      "png": {
+        "size": 1173335,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_ao_1k.png",
+        "md5": "64df3d81ff27074fa0199e21bd5d668f"
+      },
+      "exr": {
+        "size": 671604,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_ao_1k.exr",
+        "md5": "147c4d754c5fc7875d0e3f5a0d089ae0"
+      }
+    }
+  },
+  "Rough": {
+    "4k": {
+      "jpg": {
+        "size": 11401143,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/large_castle_door/large_castle_door_rough_4k.jpg",
+        "md5": "633585a394ea41f29ff984d8b02e39fb"
+      },
+      "png": {
+        "size": 16109141,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/large_castle_door/large_castle_door_rough_4k.png",
+        "md5": "9e09f24b27c5349b03a045bf73b1ff16"
+      },
+      "exr": {
+        "size": 14316817,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/large_castle_door/large_castle_door_rough_4k.exr",
+        "md5": "ff933bce00542890fd03d160f5241c0f"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 3034464,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/large_castle_door/large_castle_door_rough_2k.jpg",
+        "md5": "8926a76c81947c8c8ee8e1b77ad0db78"
+      },
+      "png": {
+        "size": 6081316,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/large_castle_door/large_castle_door_rough_2k.png",
+        "md5": "42a33e6e3081dac4f6a2fc63ac75e2fb"
+      },
+      "exr": {
+        "size": 4452664,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/large_castle_door/large_castle_door_rough_2k.exr",
+        "md5": "786df7838e7dd5569fed017409a1e9ca"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 817286,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/large_castle_door/large_castle_door_rough_1k.jpg",
+        "md5": "2d934201b0c0007ed4ab5b7c5743fc6b"
+      },
+      "png": {
+        "size": 1718188,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/large_castle_door/large_castle_door_rough_1k.png",
+        "md5": "d87e2e2daabdcca0cd23030b205b0d32"
+      },
+      "exr": {
+        "size": 1231587,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/large_castle_door/large_castle_door_rough_1k.exr",
+        "md5": "3c4a8b51bd15dd847bd778993b952c6a"
+      }
+    }
+  }
+}

@@ -1,0 +1,126 @@
+[
+  {
+    "id": "rock_face_01",
+    "source": "https://polyhaven.com/a/rock_face_01",
+    "license": "CC0-1.0",
+    "files": {
+      "mesh": "rock_face_01.fbx",
+      "Rough": "Rough.png",
+      "nor_dx": "nor_dx.png",
+      "Diffuse": "Diffuse.png"
+    }
+  },
+  {
+    "id": "rock_moss_set_01",
+    "source": "https://polyhaven.com/a/rock_moss_set_01",
+    "license": "CC0-1.0",
+    "files": {
+      "mesh": "rock_moss_set_01.fbx",
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  },
+  {
+    "id": "dead_tree_trunk",
+    "source": "https://polyhaven.com/a/dead_tree_trunk",
+    "license": "CC0-1.0",
+    "files": {
+      "mesh": "dead_tree_trunk.fbx",
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  },
+  {
+    "id": "pine_sapling_small",
+    "source": "https://polyhaven.com/a/pine_sapling_small",
+    "license": "CC0-1.0",
+    "files": {
+      "mesh": "pine_sapling_small.fbx",
+      "twig_nor_dx": "twig_nor_dx.png",
+      "bark_diff": "bark_diff.png",
+      "bark_nor_dx": "bark_nor_dx.png",
+      "twig_diff": "twig_diff.png",
+      "twig_rough": "twig_rough.png",
+      "bark_rough": "bark_rough.png",
+      "twig_alpha": "twig_alpha.png"
+    }
+  },
+  {
+    "id": "fir_tree_01",
+    "source": "https://polyhaven.com/a/fir_tree_01",
+    "license": "CC0-1.0",
+    "files": {
+      "mesh": "fir_tree_01.fbx",
+      "bark_diff": "bark_diff.png",
+      "bark_nor_dx": "bark_nor_dx.png",
+      "bark_rough": "bark_rough.png",
+      "trunk_a_diff": "trunk_a_diff.png",
+      "trunk_a_nor_dx": "trunk_a_nor_dx.png",
+      "trunk_a_rough": "trunk_a_rough.png",
+      "trunk_b_diff": "trunk_b_diff.png",
+      "trunk_b_nor_dx": "trunk_b_nor_dx.png",
+      "trunk_b_rough": "trunk_b_rough.png",
+      "trunk_c_diff": "trunk_c_diff.png",
+      "trunk_c_nor_dx": "trunk_c_nor_dx.png",
+      "trunk_c_rough": "trunk_c_rough.png",
+      "twig_alpha": "twig_alpha.png",
+      "twig_diff": "twig_diff.png",
+      "twig_nor_dx": "twig_nor_dx.png",
+      "twig_rough": "twig_rough.png"
+    }
+  },
+  {
+    "id": "grass_bermuda_01",
+    "source": "https://polyhaven.com/a/grass_bermuda_01",
+    "license": "CC0-1.0",
+    "files": {
+      "mesh": "grass_bermuda_01.fbx",
+      "Alpha": "Alpha.png",
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  },
+  {
+    "id": "forest_floor",
+    "source": "https://polyhaven.com/a/forest_floor",
+    "license": "CC0-1.0",
+    "files": {
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  },
+  {
+    "id": "brown_mud_03",
+    "source": "https://polyhaven.com/a/brown_mud_03",
+    "license": "CC0-1.0",
+    "files": {
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  },
+  {
+    "id": "snow_02",
+    "source": "https://polyhaven.com/a/snow_02",
+    "license": "CC0-1.0",
+    "files": {
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  },
+  {
+    "id": "rock_face_03",
+    "source": "https://polyhaven.com/a/rock_face_03",
+    "license": "CC0-1.0",
+    "files": {
+      "Diffuse": "Diffuse.png",
+      "nor_dx": "nor_dx.png",
+      "Rough": "Rough.png"
+    }
+  }
+]

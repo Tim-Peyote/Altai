@@ -1,0 +1,38 @@
+# Store Unreal packages and original binary media in Git LFS.
+# No blanket line-ending normalization of existing source files.
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap filter=lfs diff=lfs merge=lfs -text
+/docs/Images/** filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.fbx filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.obj filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.bin filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.png filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.tga filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.tif filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.tiff filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.exr filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.hdr filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.r16 filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.raw filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.wav filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.mp3 filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.ogg filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.flac filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.ttf filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.otf filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.zip filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.7z filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.blend filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.spp filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.sbsar filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.ztl filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.psd filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.kra filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.max filter=lfs diff=lfs merge=lfs -text
+/SourceArt/**/*.mb filter=lfs diff=lfs merge=lfs -text
+
+*.command text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
