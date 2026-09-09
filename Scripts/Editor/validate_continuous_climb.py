@@ -3,10 +3,11 @@ import unreal,json,time,traceback
 from pathlib import Path
 from altai_lab_tools import context,AltaiLabTools
 w,pc=context();p=unreal.GameplayStatics.get_player_pawn(w,0);wall=pc.get_editor_property('wall_climbing');AltaiLabTools.set_lab_weather(1,14);AltaiLabTools.prepare_wall_height('RoughRock',0)
+unreal.AltaiEditorLibrary.set_physics_test_mode(True);p.set_first_person(True)
 start=p.get_actor_location().z;began=time.monotonic();samples=[];next_rest=200;rest_until=0;limb=None;rests=0;last_sample=0
 
 def finish(passed,error=''):
- unreal.unregister_slate_post_tick_callback(handle);wall.set_move_intent(unreal.Vector2D(0,0))
+ unreal.unregister_slate_post_tick_callback(handle);unreal.AltaiEditorLibrary.set_physics_test_mode(False);wall.set_move_intent(unreal.Vector2D(0,0))
  r={'passed':passed,'gain_cm':p.get_actor_location().z-start,'seconds':time.monotonic()-began,'rests':rests,'error':error,'samples':samples};Path(unreal.Paths.project_saved_dir(),'continuous_climb_validation.json').write_text(json.dumps(r,indent=2));unreal.log('CONTINUOUS_CLIMB_VALIDATION_'+('PASSED' if passed else 'FAILED'))
 def tick(dt):
  global rest_until,limb,next_rest,rests,last_sample
@@ -24,7 +25,7 @@ def tick(dt):
    if limb==4:limb=None;next_rest+=200;rest_until=now+16;rests+=1;return
    while wall.get_editor_property('selected_limb')!=limb:wall.select_next_limb()
    target=p.get_actor_location()+p.get_actor_forward_vector()*44+p.get_actor_right_vector()*((1 if limb%2 else -1)*(28 if limb<2 else 22))+unreal.Vector(0,0,45 if limb<2 else -60)
-   pc.set_control_rotation(unreal.MathLibrary.find_look_at_rotation(p.get_actor_location()+unreal.Vector(0,0,50),target))
+   pc.set_control_rotation(unreal.MathLibrary.find_look_at_rotation(pc.player_camera_manager.get_camera_location(),target))
    assert wall.place_contact(),'Rest contact outside reach';limb+=1;return
   wall.set_move_intent(unreal.Vector2D(0,1))
  except Exception:finish(False,traceback.format_exc())

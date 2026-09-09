@@ -1,4 +1,5 @@
 #include "AltaiHands.h"
+#include "AltaiCharacter.h"
 #include "AltaiArticulatedProp.h"
 #include "Components/StaticMeshComponent.h"
 #include "AltaiTraversal.h"
@@ -29,6 +30,9 @@ void UAltaiHands::BeginPlay()
   auto* Mesh=Character->GetMesh();
   AddTickPrerequisiteComponent(Character->GetCharacterMovement());
   OldMeshTickGroup=Mesh->PrimaryComponentTick.TickGroup;
+  OldMeshVisibilityTick=uint8(Mesh->VisibilityBasedAnimTickOption);OldUpdateRateOptimizations=Mesh->bEnableUpdateRateOptimizations;
+  Mesh->VisibilityBasedAnimTickOption=EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+  Mesh->bEnableUpdateRateOptimizations=false;
   Mesh->SetTickGroup(TG_PostPhysics);
   // Measure the actual rig in reference pose, not the current bent/IK pose.
   if(auto* Asset=Mesh->GetSkeletalMeshAsset()){
@@ -43,7 +47,7 @@ void UAltaiHands::BeginPlay()
  if(Character.IsValid())if(auto* Anim=LoadClass<UAnimInstance>(nullptr,TEXT("/Game/Altai/Player/ABP_AltaiContacts.ABP_AltaiContacts_C")))
   Character->GetMesh()->SetOverridePostProcessAnimBP(Anim,true);
 }
-void UAltaiHands::EndPlay(const EEndPlayReason::Type R){Release();RestoreReleasedCollision(true);if(Character.IsValid())Character->GetMesh()->SetTickGroup(OldMeshTickGroup);Super::EndPlay(R);}
+void UAltaiHands::EndPlay(const EEndPlayReason::Type R){Release();RestoreReleasedCollision(true);if(Character.IsValid()){auto* Mesh=Character->GetMesh();Mesh->SetTickGroup(OldMeshTickGroup);Mesh->VisibilityBasedAnimTickOption=EVisibilityBasedAnimTickOption(OldMeshVisibilityTick);Mesh->bEnableUpdateRateOptimizations=OldUpdateRateOptimizations;}Super::EndPlay(R);}
 void UAltaiHands::ToggleGrab(){if(Held)Release();else TryGrab();}
 bool UAltaiHands::TryGrab(bool FurnitureOnly)
 {
@@ -68,25 +72,36 @@ bool UAltaiHands::TryGrab(bool FurnitureOnly)
  const bool Articulated=Fixture && P==Fixture->Part;
  if(FurnitureOnly && !Articulated)return false;
  if(!P || !P->IsSimulatingPhysics() || (!Articulated && P->GetMass()>MaxMass)){Hint=TEXT("Object is fixed or too heavy");return false;}
- if(Articulated && FVector::Dist(C->GetMesh()->GetSocketLocation(TEXT("upperarm_r")),P->GetSocketLocation(TEXT("Grip_One")))>LimbReach[1]+8){Hint=TEXT("Move closer to the handle (Ctrl crouch)");return false;}
+ FVector ReachOffset=FVector::ZeroVector;
+ if(Articulated){
+  const FTransform Grip=P->GetSocketTransform(TEXT("Grip_One"));
+  const FVector Wrist=Grip.GetLocation()-Grip.GetUnitAxis(EAxis::X)*7.f-Grip.GetUnitAxis(EAxis::Z)*2.f;
+  const FVector Delta=Wrist-C->GetMesh()->GetSocketLocation(TEXT("upperarm_r"));
+  // Bend knees and shift the torso for low handles, retaining a bent elbow.
+  // The capsule stays in place; the eyes smoothly follow the supported body adjustment.
+  ReachOffset=Delta.GetSafeNormal()*FMath::Max(0.f,float(Delta.Size())-LimbReach[1]*.80f);
+  const FVector Horizontal=FVector(ReachOffset.X,ReachOffset.Y,0).GetClampedToMaxSize(25.f);
+  ReachOffset=Horizontal+FVector(0,0,FMath::Clamp(ReachOffset.Z,-50.,0.));
+  if((Delta-ReachOffset).Size()>LimbReach[1]*.95f){Hint=TEXT("Move closer to the handle");return false;}
+ }
+ FurnitureBodyOffset=ReachOffset;
+ if(auto* Player=Cast<AAltaiCharacter>(C))Player->InteractionEyeOffset=ReachOffset;
  ConstrainedGrip=Articulated;
- PreviousBodyLocation=C->GetActorLocation();Held=P;GrabAge=0;OldPawnResponse=P->GetCollisionResponseToChannel(ECC_Pawn);for(int32 I=PendingCollision.Num()-1;I>=0;--I)if(PendingCollision[I].Component==P){OldPawnResponse=PendingCollision[I].Response;PendingCollision.RemoveAt(I);}if(!ConstrainedGrip)P->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);HeldMass=P->GetMass();TwoHands=!ConstrainedGrip && HeldMass>3;
+ PreviousBodyLocation=C->GetActorLocation();PreviousVelocity=C->GetVelocity();Held=P;GrabAge=0;
+ OldPawnResponse=P->GetCollisionResponseToChannel(ECC_Pawn);OldCCD=P->GetBodyInstance()?P->GetBodyInstance()->bUseCCD:false;
+ for(int32 I=PendingCollision.Num()-1;I>=0;--I)if(PendingCollision[I].Component==P){OldPawnResponse=PendingCollision[I].Response;OldCCD=PendingCollision[I].OldCCD;PendingCollision.RemoveAt(I);}
+ if(!ConstrainedGrip){P->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);P->SetUseCCD(true);}
+ HeldMass=P->GetMass();TwoHands=!ConstrainedGrip && (HeldMass>3 || P->GetOwner()->ActorHasTag(TEXT("AltaiTwoHandOnly")));
+ HandMotionOffset=SmoothedHandOffset=FVector::ZeroVector;HoldDistanceOffset=0;FollowThroughRemaining=0;ThrowPose=0;
  OldLinearDamping=P->GetLinearDamping();OldAngularDamping=P->GetAngularDamping();
  P->SetLinearDamping(FMath::Max(OldLinearDamping,.8f));P->SetAngularDamping(FMath::Max(OldAngularDamping,3.f));
  LocalContact=P->GetComponentTransform().InverseTransformPosition(Hit.ImpactPoint);
- const FVector Right=C->GetActorRightVector(),Forward=C->GetActorForwardVector();
- const float Radius=FMath::Clamp(P->Bounds.BoxExtent.GetMin(),5.f,22.f);
- const FVector Center=P->GetCenterOfMass();
- LeftLocal=P->GetComponentTransform().InverseTransformPosition(Center-Right*(Radius+5)-Forward*Radius*.25f);
- RightLocal=P->GetComponentTransform().InverseTransformPosition(Center+Right*(Radius+5)-Forward*Radius*.25f);
- LeftGripSocket=TEXT("Grip_L");RightGripSocket=TwoHands?FName(TEXT("Grip_R")):FName(TEXT("Grip_One"));
- AuthoredGrip=P->DoesSocketExist(RightGripSocket) && (!TwoHands || P->DoesSocketExist(LeftGripSocket));
- if(AuthoredGrip){
-  RightLocal=P->GetComponentTransform().InverseTransformPosition(P->GetSocketLocation(RightGripSocket));
-  if(TwoHands)LeftLocal=P->GetComponentTransform().InverseTransformPosition(P->GetSocketLocation(LeftGripSocket));
- }else{LeftGripSocket=NAME_None;RightGripSocket=NAME_None;}
- HoldRotation=AuthoredGrip?FRotator(0,C->GetActorRotation().Yaw,0).Quaternion():P->GetComponentQuat();OverreachTime=0;Hint=TEXT("F: put down / release");
- if(ConstrainedGrip){C->Tags.AddUnique(TEXT("AltaiFurnitureGrip"));DesiredOpening=Fixture->GetOpening();if(auto* PC=Cast<APlayerController>(C->GetController())){PC->SetIgnoreLookInput(true);LockedLook=true;}Hint=TEXT("Drag mouse down/up: pull/push | release LMB or F");}
+ ConfigureGrip();
+ const FQuat BodyYaw=FRotator(0,C->GetActorRotation().Yaw,0).Quaternion();
+ RelativeHoldRotation=BodyYaw.Inverse()*P->GetComponentQuat();NeutralHoldRotation=RelativeHoldRotation;HoldRotation=P->GetComponentQuat();
+ GripAngles=FVector::ZeroVector;AnatomicalFrame=FQuat::Identity;AnatomicalFrameReady=false;GripReturningToNeutral=false;GripRotationLimited=false;GripRotationEffort=0;WristTrackingError=ForearmRoll=TrackingLossTime=0;
+ OverreachTime=0;Hint=TEXT("F: put down / release");
+ if(ConstrainedGrip){C->Tags.AddUnique(TEXT("AltaiFurnitureGrip"));DesiredOpening=Fixture->GetOpening();UpdateLookLock();Hint=TEXT("Drag mouse down/up: pull/push | release LMB or F");}
  return true;
 }
 void UAltaiHands::DragInteraction(float Delta)
@@ -95,15 +110,23 @@ void UAltaiHands::DragInteraction(float Delta)
 }
 void UAltaiHands::Release()
 {
- if(Character.IsValid())Character->Tags.Remove(TEXT("AltaiFurnitureGrip"));
+ const bool Gesture=MovingHand && !ConstrainedGrip && IsValid(Held);
+ const FVector ReleasedVelocity=IsValid(Held)?Held->GetPhysicsLinearVelocity():FVector::ZeroVector;
+ const bool Both=TwoHands;
+ LastReleaseSpeed=ReleasedVelocity.Size();
+ CancelManipulation();
+ FollowThroughRemaining=Gesture && LastReleaseSpeed>150.f?.18f:0.f;
+ FollowThroughDirection=ReleasedVelocity.GetSafeNormal();FollowThroughTwoHands=Both;
+ if(Character.IsValid()){Character->Tags.Remove(TEXT("AltaiFurnitureGrip"));if(auto* Player=Cast<AAltaiCharacter>(Character.Get()))Player->InteractionEyeOffset=FVector::ZeroVector;}
  if(LockedLook && Character.IsValid())if(auto* PC=Cast<APlayerController>(Character->GetController()))PC->SetIgnoreLookInput(false);LockedLook=false;ConstrainedGrip=false;
- if(IsValid(Held)){PendingCollision.Add({Held.Get(),OldPawnResponse});Held->SetLinearDamping(OldLinearDamping);Held->SetAngularDamping(OldAngularDamping);}
- Held=nullptr;HeldMass=0;CarrySpeedScale=CarryAccelerationScale=1;BalanceDemand=0;AuthoredGrip=false;LeftGripSocket=RightGripSocket=NAME_None;AppliedForce=0;PositionError=0;TwoHands=false;OverreachTime=0;
+ if(IsValid(Held)){PendingCollision.Add({Held.Get(),OldPawnResponse,OldCCD});Held->SetLinearDamping(OldLinearDamping);Held->SetAngularDamping(OldAngularDamping);}
+ FurnitureBodyOffset=FVector::ZeroVector;Held=nullptr;HeldMass=0;CarrySpeedScale=CarryAccelerationScale=1;BalanceDemand=0;AuthoredGrip=false;LeftGripSocket=RightGripSocket=NAME_None;AppliedForce=0;PositionError=0;TwoHands=false;OverreachTime=0;
  Hint=TEXT("F: take object");
 }
 void UAltaiHands::RefreshGripGoals()
 {
  if(!IsValid(Held))return;
+
  ContactGoals[0]=Held->GetComponentTransform().TransformPosition(LeftLocal);
  ContactGoals[1]=Held->GetComponentTransform().TransformPosition(RightLocal);
 }
@@ -125,28 +148,53 @@ void UAltaiHands::TickComponent(float Dt,ELevelTick T,FActorComponentTickFunctio
  const FVector P=Character->GetActorLocation()+FVector(0,0,90);
  const bool Covered=GetWorld()->LineTraceSingleByChannel(Roof,P,P+FVector(0,0,2500),ECC_Visibility,RainQuery);
  Wetness=FMath::Clamp(Wetness+Dt*((Covered?0:Rain)*.07f-(Rain<.1f?.025f:0)),0.f,1.f);
- if(!IsValid(Held) || !Held->IsSimulatingPhysics()){if(Held)Release();Blend=FMath::FInterpTo(Blend,0.f,Dt,10);for(float& W:ContactWeights)W=FMath::FInterpTo(W,0.f,Dt,10);Stamina=FMath::Min(1.f,Stamina+Dt*.09f);return;}
+ if(!IsValid(Held) || !Held->IsSimulatingPhysics()){
+  if(Held)Release();
+  if(FollowThroughRemaining>0){
+   FollowThroughRemaining=FMath::Max(0.f,FollowThroughRemaining-Dt);
+   ContactGoals[1]+=FollowThroughDirection*(Dt*45.f);if(FollowThroughTwoHands)ContactGoals[0]+=FollowThroughDirection*(Dt*45.f);
+  }
+  GripAngles=FVector::ZeroVector;GripRotationEffort=0;GripRotationLimited=false;WristTrackingError=0;
+  ThrowPose=FMath::FInterpTo(ThrowPose,0.f,Dt,8.f);
+  Blend=FMath::FInterpTo(Blend,0.f,Dt,10);for(float& W:ContactWeights)W=FMath::FInterpTo(W,0.f,Dt,10);
+  Stamina=FMath::Min(1.f,Stamina+Dt*.09f);return;
+ }
  auto* C=Character.Get();
  if(ConstrainedGrip){
   auto* Prop=Cast<AAltaiArticulatedProp>(Held->GetOwner());if(!Prop){Release();return;}
   if(auto* PC=Cast<APlayerController>(C->GetController());PC && !C->ActorHasTag(TEXT("AltaiDeveloperPanelOpen"))){float X=0,Y=0;PC->GetInputMouseDelta(X,Y);DragInteraction((-Y+X*.35f)*(Prop->Sliding?.5f:.8f));}
   RefreshGripGoals();
   const float Reach=FVector::Dist(C->GetMesh()->GetSocketLocation(TEXT("upperarm_r")),ContactGoals[1]);
-  OverreachTime=Reach>LimbReach[1]+12?OverreachTime+Dt:0;
+  GrabAge+=Dt;
+  OverreachTime=GrabAge>.8f && Reach>LimbReach[1]+4?OverreachTime+Dt:0;
   if(OverreachTime>.18f){Release();Hint=TEXT("Handle out of reach - step closer");return;}
-  Prop->DriveGrip(DesiredOpening,OneHandForce*FMath::Lerp(.65f,1.f,Stamina));
+  if(GrabAge>.35f)Prop->DriveGrip(DesiredOpening,OneHandForce*FMath::Lerp(.65f,1.f,Stamina));
   PositionError=FVector::Dist(Prop->GripAt(DesiredOpening),ContactGoals[1]);CarrySpeedScale=CarryAccelerationScale=1;BalanceDemand=0;
   ContactWeights[0]=FMath::FInterpTo(ContactWeights[0],0.f,Dt,10);ContactWeights[1]=FMath::FInterpTo(ContactWeights[1],1.f,Dt,10);
   Stamina=FMath::Clamp(Stamina-Dt*FMath::Clamp(PositionError/100.f,0.f,1.f)*.025f,0.f,1.f);return;
  }
- const FVector Forward=C->GetActorForwardVector();
- if(AuthoredGrip)HoldRotation=FQuat::Slerp(HoldRotation,FRotator(0,C->GetActorRotation().Yaw,0).Quaternion(),1.f-FMath::Exp(-Dt*7.f));
+ TickManipulation(Dt);if(!IsValid(Held))return;
+ TrackingLossTime=GrabAge>1.5f && WristTrackingError>28.f?TrackingLossTime+Dt:0;
+ if(TrackingLossTime>.3f){Release();Hint=TEXT("Grip lost: wrist cannot follow the object - move closer or release the obstruction");return;}
+ const FVector Forward=C->GetActorForwardVector(),Right=C->GetActorRightVector();
+ const FQuat RotationGoal=FRotator(0,C->GetActorRotation().Yaw,0).Quaternion()*RelativeHoldRotation;
+ HoldRotation=FQuat::Slerp(HoldRotation,RotationGoal,1.f-FMath::Exp(-Dt*7.f));
  // Keep a heavy load near the trunk, with clearance for the actual authored prop depth.
- float CarryDistance=FMath::Lerp(46.f,40.f,CarryPose);
+ float CarryDistance=FMath::Lerp(36.f,32.f,CarryPose);
  if(AuthoredGrip){const float Depth=Held->CalcBounds(FTransform(FQuat::Identity,FVector::ZeroVector,Held->GetComponentScale())).BoxExtent.X;
   CarryDistance=FMath::Max(CarryDistance,Depth+17.f);}
- FVector Target=C->GetActorLocation()+Forward*CarryDistance+FVector(0,0,45.f-CarryPose*12.f);
- if(AuthoredGrip){const FVector GripCenter=Held->GetComponentTransform().TransformPosition(TwoHands?(LeftLocal+RightLocal)*.5f:RightLocal);Target-=GripCenter-Held->GetCenterOfMass();}
+ CarryDistance+=HoldDistanceOffset;
+ FVector Target=C->GetActorLocation()+Forward*(CarryDistance+SmoothedHandOffset.X)+Right*((TwoHands?0.f:14.f)+SmoothedHandOffset.Y)+FVector(0,0,53.f+GripHeightOffset-CarryPose*7.f+SmoothedHandOffset.Z);
+ {const FVector GripCenter=Held->GetComponentTransform().TransformPosition(TwoHands?(LeftLocal+RightLocal)*.5f:RightLocal);Target-=GripCenter-Held->GetCenterOfMass();}
+ // Keep the physical target inside both arm reach volumes, including during swings and winding up.
+ // Clamping only the IK would leave the prop floating beyond the fingertips.
+ for(int32 Pass=0;Pass<3;++Pass)for(int32 I=TwoHands?0:1;I<2;++I){
+  const FVector Shoulder=C->GetMesh()->GetSocketLocation(I==0?TEXT("upperarm_l"):TEXT("upperarm_r"));
+  const FVector Local=I==0?LeftLocal:RightLocal;
+  const FVector Offset=Held->GetComponentTransform().TransformPosition(Local)-Held->GetCenterOfMass();
+  const FVector DesiredWrist=Target+Offset;
+  Target+=Shoulder+(DesiredWrist-Shoulder).GetClampedToMaxSize(LimbReach[I]*.92f)-DesiredWrist;
+ }
  BodyMass=FMath::Max(1.f,C->GetCharacterMovement()->Mass);
  const float Ratio=HeldMass/BodyMass;
  CarrySpeedScale=1.f/(1.f+2.f*Ratio);CarryAccelerationScale=1.f/(1.f+3.f*Ratio);
@@ -164,7 +212,7 @@ void UAltaiHands::TickComponent(float Dt,ELevelTick T,FActorComponentTickFunctio
  float ContactWetness=Wetness;if(auto* Surface=Held->GetOwner()->FindComponentByClass<UAltaiWetSurface>())ContactWetness=FMath::Max(ContactWetness,Surface->Wetness);
  const float Limit=(TwoHands?TwoHandForce:OneHandForce)*FMath::Lerp(.55f,1.f,Stamina)*FMath::Lerp(1.f,.7f,ContactWetness);
  // UE forces use kg*cm/s^2. Gravity compensation still consumes the bounded force budget.
- const float K=650.f,D=2.f*FMath::Sqrt(K*HeldMass);
+ const float K=FMath::Max(650.f,HeldMass*180.f),D=2.f*FMath::Sqrt(K*HeldMass);
  const float Denom=1.f+D/HeldMass*Step+K/HeldMass*Step*Step;
  FVector Force=(Error*K-Velocity*(D+K*Step))/Denom+FVector(0,0,-GetWorld()->GetGravityZ()*HeldMass);
  Force=Force.GetClampedToMaxSize(Limit);AppliedForce=Force.Size();
@@ -182,9 +230,12 @@ void UAltaiHands::TickComponent(float Dt,ELevelTick T,FActorComponentTickFunctio
  Held->AddTorqueInRadians(Rotation.RotateVector(LocalTorque).GetClampedToMaxSize(Limit*12),NAME_None,false);
  Stamina=FMath::Clamp(Stamina-Step*(HeldMass*.0015f+FMath::Max(0.f,AppliedForce/Limit-.8f)*.08f),0.f,1.f);
  GrabAge+=Step;
- OverreachTime=GrabAge>1.5f && PositionError>100?OverreachTime+Step:0;
+ OverreachTime=GrabAge>1.5f && PositionError>100?OverreachTime+Step:OverreachTime;
  if(OverreachTime>.45f || FVector::Dist(Current,C->GetActorLocation())>240){Release();Hint=TEXT("Grip lost: object blocked or out of reach");return;}
  RefreshGripGoals();
+ bool BeyondArm=false;
+ for(int32 I=TwoHands?0:1;I<2;++I)BeyondArm|=FVector::Dist(C->GetMesh()->GetSocketLocation(I==0?TEXT("upperarm_l"):TEXT("upperarm_r")),ContactGoals[I])>LimbReach[I]+8.f;
+ if(GrabAge>1.5f && BeyondArm){OverreachTime+=Step;if(OverreachTime>.4f){Release();Hint=TEXT("Grip lost: move the object closer");return;}}else if(PositionError<=100)OverreachTime=0;
  Blend=FMath::FInterpTo(Blend,1.f,Dt,9);
  ContactWeights[0]=TwoHands?Blend:0;ContactWeights[1]=Blend;ContactWeights[2]=ContactWeights[3]=0;
 }
@@ -193,8 +244,9 @@ void UAltaiHands::RestoreReleasedCollision(bool Force)
 {
  for(int32 I=PendingCollision.Num()-1;I>=0;--I){
   auto& Entry=PendingCollision[I];auto* P=Entry.Component.Get();if(!P){PendingCollision.RemoveAt(I);continue;}
-  bool Safe=Force || !Character.IsValid();
-  if(!Safe){FVector Closest;const float Distance=Character->GetCapsuleComponent()->GetClosestPointOnCollision(P->Bounds.Origin,Closest);Safe=Distance>P->Bounds.SphereRadius+3;}
-  if(Safe){P->SetCollisionResponseToChannel(ECC_Pawn,Entry.Response);PendingCollision.RemoveAt(I);}
+  const bool Safe=Force || !Character.IsValid() || !P->OverlapComponent(Character->GetActorLocation(),Character->GetActorQuat(),Character->GetCapsuleComponent()->GetCollisionShape(2.f));
+  if(Safe)P->SetCollisionResponseToChannel(ECC_Pawn,Entry.Response);
+  // Keep CCD during flight; restore the original body setting once slow and clear of the player.
+  if(Safe && (Force || P->GetPhysicsLinearVelocity().Size()<150.f)){P->SetUseCCD(Entry.OldCCD);PendingCollision.RemoveAt(I);}
  }
 }

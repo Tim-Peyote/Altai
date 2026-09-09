@@ -38,8 +38,8 @@ def socket(m,name,pos,finger,palm):
  if not s:s=unreal.new_object(unreal.StaticMeshSocket,outer=m);s.set_editor_property('socket_name',name);m.add_socket(s)
  s.set_editor_property('relative_location',unreal.Vector(*pos));s.set_editor_property('relative_rotation',unreal.MathLibrary.make_rot_from_xz(unreal.Vector(*finger),unreal.Vector(*palm)))
 for name in ['SM_FieldBucket','SM_FieldCrate']:
- m=meshes[name];socket(m,'Grip_L',(0,-25,23),(0,0,1),(0,1,0));socket(m,'Grip_R',(0,25,23),(0,0,1),(0,-1,0));save(m)
-socket(meshes['SM_FieldBucket'],'Grip_One',(0,5,61),(0,0,-1),(0,-1,0));save(meshes['SM_FieldBucket'])
+ m=meshes[name];bucket=name=='SM_FieldBucket';z=42 if bucket else 23;y=24 if bucket else 25;direction=(0,0,-1 if bucket else 1);socket(m,'Grip_L',(0,-y,z),direction,(0,1,0));socket(m,'Grip_R',(0,y,z),direction,(0,-1,0));save(m)
+socket(meshes['SM_FieldBucket'],'Grip_One',(5,0,68),(0,0,-1),(-1,0,0));save(meshes['SM_FieldBucket'])
 socket(meshes['SM_FieldStick'],'Grip_One',(0,0,8),(1,0,0),(0,0,-1));save(meshes['SM_FieldStick'])
 # Tiled, compact materials; existing CC0 scan sources are reused.
 def material(name,kind,tint=(1,1,1),rough=.8,metal=0):

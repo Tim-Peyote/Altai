@@ -56,7 +56,7 @@ void AAltaiCharacter::SetFirstPerson(bool Enabled)
 {
  if(!CameraInitialized){OriginalArmLength=CameraBoom->TargetArmLength;CameraInitialized=true;}
  FirstPerson=Enabled;Tags.AddUnique(TEXT("AltaiViewConfigured"));if(Enabled)Tags.AddUnique(TEXT("AltaiFirstPerson"));else Tags.Remove(TEXT("AltaiFirstPerson"));
- const bool OnWall=ActorHasTag(TEXT("AltaiWallAttached"));bUseControllerRotationYaw=Enabled && !OnWall;GetCharacterMovement()->bOrientRotationToMovement=!Enabled && !OnWall;
+ const bool OnWall=ActorHasTag(TEXT("AltaiWallAttached")) || ActorHasTag(TEXT("AltaiMantling"));bUseControllerRotationYaw=Enabled && !OnWall;GetCharacterMovement()->bOrientRotationToMovement=!Enabled && !OnWall;
  if(Enabled){if(!OnWall)SetActorRotation(FRotator(0,GetControlRotation().Yaw,0));GetMesh()->HideBoneByName(TEXT("head"),EPhysBodyOp::PBO_None);}
  else GetMesh()->UnHideBoneByName(TEXT("head"));
 }
@@ -65,10 +65,15 @@ void AAltaiCharacter::Tick(float Dt)
 {
  Super::Tick(Dt);if(!CameraInitialized)return;
  CameraBoom->TargetArmLength=FMath::FInterpTo(CameraBoom->TargetArmLength,FirstPerson?0.f:OriginalArmLength,Dt,12);
- const bool OnWall=ActorHasTag(TEXT("AltaiWallAttached"));
- float EyeHeight=OnWall?82.f:76.f;
- // Follow the lowered hanging pose without importing the lab module into gameplay.
- if((OnWall || bIsCrouched) && GetMesh()->DoesSocketExist(TEXT("neck_01")))EyeHeight=FMath::Clamp(static_cast<float>(GetMesh()->GetSocketLocation(TEXT("neck_01")).Z-GetActorLocation().Z+14.f),48.f,90.f);
- CameraBoom->TargetOffset=FMath::VInterpTo(CameraBoom->TargetOffset,FirstPerson?(GetActorForwardVector()*((OnWall || bIsCrouched || ActorHasTag(TEXT("AltaiFurnitureGrip")))?10.f:FirstPersonForward)+FVector(0,0,EyeHeight)):FVector::ZeroVector,Dt,12);
+ const bool OnWall=ActorHasTag(TEXT("AltaiWallAttached")) || ActorHasTag(TEXT("AltaiMantling"));
+ float EyeHeight=OnWall?82.f:(bIsCrouched?56.f:64.f);
+ // During climbing the torso can move relative to the capsule in all three axes.
+ // Keep the eye in front of the neck, not inside the chest when looking at footholds.
+ FVector EyeOffset=GetActorForwardVector()*FMath::Clamp(FirstPersonForward,0.f,8.f)+FVector(0,0,EyeHeight);
+ if(OnWall && GetMesh()->DoesSocketExist(TEXT("neck_01"))){
+  const FVector Neck=GetMesh()->GetSocketLocation(TEXT("neck_01"))-GetActorLocation();
+  EyeOffset=FVector(Neck.X,Neck.Y,FMath::Clamp(float(Neck.Z+14.f),10.f,90.f))+GetActorForwardVector()*12.f;
+ }
+ CameraBoom->TargetOffset=FMath::VInterpTo(CameraBoom->TargetOffset,FirstPerson?EyeOffset+InteractionEyeOffset:FVector::ZeroVector,Dt,OnWall?10.f:5.f);
  FollowCamera->SetRelativeLocation(FMath::VInterpTo(FollowCamera->GetRelativeLocation(),FVector::ZeroVector,Dt,12));
 }

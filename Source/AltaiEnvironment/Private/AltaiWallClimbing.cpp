@@ -48,18 +48,35 @@ bool UAltaiWallClimbing::AttachWall()
   if(I>=2)G+=Normal*9;Goals.Add(G);
  }
  FHitResult Hit;C->SetActorLocation(Center,true,&Hit);if(Hit.bBlockingHit){Wall.Reset();return false;}
+ return StartAttachment(Goals,true);
+}
+bool UAltaiWallClimbing::AttachFromLedge(UPrimitiveComponent* Surface,const FVector& Outward,const TArray<FVector>& Contacts)
+{
+ if(Attached || !Character.IsValid() || !Hands.IsValid() || !Surface || Contacts.Num()!=4)return false;
+ Wall=Surface;Normal=Outward.GetSafeNormal2D();Right=FVector::CrossProduct(FVector::UpVector,-Normal).GetSafeNormal();
+ return StartAttachment(Contacts,false);
+}
+bool UAltaiWallClimbing::StartAttachment(const TArray<FVector>& Goals,bool Sequential)
+{
+ auto* C=Character.Get();
  LocalContacts.Reset();for(auto G:Goals)LocalContacts.Add(Wall->GetComponentTransform().InverseTransformPosition(G));
  OldYaw=C->bUseControllerRotationYaw;OldOrient=C->GetCharacterMovement()->bOrientRotationToMovement;
  C->bUseControllerRotationYaw=false;C->GetCharacterMovement()->bOrientRotationToMovement=false;
  C->SetActorRotation((-Normal).Rotation());C->GetCharacterMovement()->StopMovementImmediately();C->GetCharacterMovement()->DisableMovement();
  if(auto* PC=Cast<APlayerController>(C->GetController())){PC->SetIgnoreMoveInput(true);LockedInput=true;}
- DisplayContacts=Goals;MovingLimb=INDEX_NONE;ContactProgress=1;SmoothedIntent=FVector2D::ZeroVector;BodyOffset=FVector::ZeroVector;Attached=true;C->Tags.AddUnique(TEXT("AltaiWallAttached"));ContactActive.Init(true,4);SlipTime=0;StepTime=0;LimbStamina[0]=FMath::Min(LimbStamina[0],Hands->Stamina);LimbStamina[1]=FMath::Min(LimbStamina[1],Hands->Stamina);Hands->SetWallContacts(Goals,true);Hint=TEXT("WASD climb | RMB limb | LMB reach | Q free limb | Space jump | E top");
+ DisplayContacts=Goals;MovingLimb=INDEX_NONE;ContactProgress=1;SmoothedIntent=FVector2D::ZeroVector;BodyOffset=FVector::ZeroVector;ClimbSpeed=0;BodyTwist=0;
+ Attached=true;C->Tags.AddUnique(TEXT("AltaiWallAttached"));ContactActive.Init(true,4);SlipTime=0;StepTime=0;SettleTime=0;
+ LimbStamina[0]=FMath::Min(LimbStamina[0],Hands->Stamina);LimbStamina[1]=FMath::Min(LimbStamina[1],Hands->Stamina);
+ // Catch with one hand, then reach with the other while feet carry the load.
+ if(Sequential){ContactActive[0]=false;BeginContactMove(0,Goals[0]);}
+ Hands->SetWallContacts(DisplayContacts,true);Hint=TEXT("WASD up/down/traverse | RMB select limb | LMB reach | Q rest limb | Space jump | E top");
  return true;
 }
+
 void UAltaiWallClimbing::ReleaseWall()
 {
  if(!Attached)return;
- Attached=false;MovingLimb=INDEX_NONE;BodyOffset=FVector::ZeroVector;ContactActive.Init(false,4);SupportLoad.Init(0,4);if(Hands.IsValid()){Hands->Stamina=(LimbStamina[0]+LimbStamina[1])*.5f;Hands->SetWallContacts({},false);}
+ Attached=false;MovingLimb=INDEX_NONE;BodyOffset=FVector::ZeroVector;BodyTwist=0;ClimbSpeed=0;ContactActive.Init(false,4);SupportLoad.Init(0,4);if(Hands.IsValid()){Hands->Stamina=(LimbStamina[0]+LimbStamina[1])*.5f;Hands->SetWallContacts({},false);}
  if(Character.IsValid()){
   auto* C=Character.Get();C->Tags.Remove(TEXT("AltaiWallAttached"));if(C->ActorHasTag(TEXT("AltaiViewConfigured"))){OldYaw=C->ActorHasTag(TEXT("AltaiFirstPerson"));OldOrient=!OldYaw;}C->bUseControllerRotationYaw=OldYaw;C->GetCharacterMovement()->bOrientRotationToMovement=OldOrient;
   C->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
@@ -81,7 +98,7 @@ bool UAltaiWallClimbing::BeginContactMove(int32 Limb,const FVector& Goal)
  const FName Bone=Limb==0?TEXT("hand_l"):Limb==1?TEXT("hand_r"):Limb==2?TEXT("foot_l"):TEXT("foot_r");
  MoveStart=Character->GetMesh()->GetSocketLocation(Bone);LocalContacts[Limb]=Wall->GetComponentTransform().InverseTransformPosition(Goal);
  ContactActive[Limb]=false;MovingLimb=Limb;ContactElapsed=0;ContactProgress=0;
- ContactDuration=FMath::Clamp(FVector::Dist(MoveStart,Goal)/110.f,.28f,.65f);
+ ContactDuration=FMath::Clamp(FVector::Dist(MoveStart,Goal)/100.f,.4f,.8f);LastStep=Limb;SelectedLimb=Limb;
  return true;
 }
 void UAltaiWallClimbing::LoseContact(int32 Limb)
@@ -101,11 +118,11 @@ void UAltaiWallClimbing::UpdateContacts(float Dt)
  if(!Wall.IsValid() || !Hands.IsValid())return;
  if(MovingLimb!=INDEX_NONE){
   ContactElapsed+=Dt;ContactProgress=FMath::Clamp(ContactElapsed/ContactDuration,0.f,1.f);
-  if(ContactProgress>=1){ContactActive[MovingLimb]=true;MovingLimb=INDEX_NONE;}
+  if(ContactProgress>=1){ContactActive[MovingLimb]=true;MovingLimb=INDEX_NONE;SettleTime=.12f;}
  }
  for(int I=0;I<4;++I){
   const FVector Goal=Wall->GetComponentTransform().TransformPosition(LocalContacts[I]);
-  if(I==MovingLimb){const float A=FMath::SmoothStep(0.f,1.f,ContactProgress);
+  if(I==MovingLimb){const float A=FMath::SmoothStep(0.f,1.f,FMath::Clamp((ContactProgress-.18f)/.82f,0.f,1.f));
    DisplayContacts[I]=FMath::Lerp(MoveStart,Goal,A)+Normal*(FMath::Sin(PI*A)*(I<2?9.f:13.f));
   }else if(ContactActive[I])DisplayContacts[I]=Goal;
   else {
@@ -115,15 +132,18 @@ void UAltaiWallClimbing::UpdateContacts(float Dt)
   }
  }
  Hands->SetWallContacts(DisplayContacts,true);
- for(int I=0;I<4;++I)if(!ContactActive[I] && MovingLimb!=I)Hands->ContactWeights[I]=0;
+ for(int I=0;I<4;++I)if(!ContactActive[I] && MovingLimb!=I)Hands->ContactWeights[I]=1;
 }
 void UAltaiWallClimbing::SelectNextLimb(){SelectedLimb=(SelectedLimb+1)%4;}
 bool UAltaiWallClimbing::PlaceContact()
 {
  if(!Attached || !Wall.IsValid() || !Character.IsValid())return false;
- auto* C=Character.Get();const FVector Eye=C->GetActorLocation()+FVector(0,0,50);
+ auto* C=Character.Get();FVector Eye=C->GetActorLocation()+FVector(0,0,50);FRotator View=C->GetControlRotation();
+ if(auto* PC=Cast<APlayerController>(C->GetController()))PC->GetPlayerViewPoint(Eye,View);
+ // The camera origin and current look direction select the visible hold in either view.
+ View=C->GetControlRotation();
  FHitResult H;FCollisionQueryParams Q(SCENE_QUERY_STAT(AltaiManualContact),false,C);
- if(!GetWorld()->LineTraceSingleByChannel(H,Eye,Eye+C->GetControlRotation().Vector()*220,ECC_Visibility,Q) || H.GetComponent()!=Wall.Get())return false;
+ if(!GetWorld()->LineTraceSingleByChannel(H,Eye,Eye+View.Vector()*900,ECC_Visibility,Q) || H.GetComponent()!=Wall.Get())return false;
  const FName RootBone=SelectedLimb==0?TEXT("upperarm_l"):SelectedLimb==1?TEXT("upperarm_r"):SelectedLimb==2?TEXT("thigh_l"):TEXT("thigh_r");
  const FVector LimbRoot=C->GetMesh()->GetSocketLocation(RootBone);
  if(FVector::Dist(LimbRoot,H.ImpactPoint+Normal*(SelectedLimb<2?7:16))>Reach(SelectedLimb)){Hint=TEXT("Contact outside limb reach");return false;}
@@ -154,32 +174,54 @@ void UAltaiWallClimbing::TickComponent(float Dt,ELevelTick T,FActorComponentTick
  }
  Grip=ActiveCount?GripTotal/ActiveCount:0;
  SmoothedIntent=FMath::Vector2DInterpTo(SmoothedIntent,Intent,Dt,6.f);
- const FVector Move=(Right*SmoothedIntent.X+FVector::UpVector*SmoothedIntent.Y)*40.f*Dt;
- StepTime+=Dt;
- if(!Move.IsNearlyZero() && MovingLimb==INDEX_NONE && ActiveCount>=3){
-  const FVector Candidate=C->GetActorLocation()+Move;bool Reachable=true;
-  for(int I=0;I<4;++I){
-   if(!ContactActive[I])continue;
-   FVector G=Wall->GetComponentTransform().TransformPosition(LocalContacts[I]);
+ const FVector Direction=Right*SmoothedIntent.X+FVector::UpVector*SmoothedIntent.Y;
+ StepTime+=Dt;SettleTime=FMath::Max(0.f,SettleTime-Dt);
+ // Re-seat the most trailing support before the rig reaches full extension.
+ // Moving one limb never freezes the whole body; the other contacts constrain its motion.
+ if(AssistedStepping && !Intent.IsNearlyZero() && MovingLimb==INDEX_NONE && SettleTime<=0 && ActiveCount>=2){
+  int32 Best=INDEX_NONE;float Score=9.f;FVector BestGoal;
+  for(int32 I=0;I<4;++I){
+   FVector Target=C->GetActorLocation()+Right*((I%2?1.f:-1.f)*(I<2?28:22))+FVector(0,0,I<2?50:-60);
+   const FVector Current=Wall->GetComponentTransform().TransformPosition(LocalContacts[I]);
+   float Lag=FVector::DotProduct(Target-Current,Direction.GetSafeNormal());
+   if(!ContactActive[I])Lag+=80;
+   if(I==LastStep)Lag-=6;
+   // On descent, lower a foot first; hands follow the lowered body.
+   if(Intent.Y<-.1f && I>=2)Lag+=5;
+   if(Lag<=Score)continue;
+   Target+=Direction.GetSafeNormal()*(I<2?16.f:20.f);
+   FVector G;if(!Probe(Target,G))continue;if(I>=2)G+=Normal*9;
    const FName RootBone=I==0?TEXT("upperarm_l"):I==1?TEXT("upperarm_r"):I==2?TEXT("thigh_l"):TEXT("thigh_r");
-   const FVector Root=C->GetMesh()->GetSocketLocation(RootBone)+Move;
-   if(FVector::Dist(Root,G)>Reach(I)){
-    if(AssistedStepping && StepTime>.22f){
-     FVector New;
-     if(Probe(Candidate+Right*((I%2?1.f:-1.f)*(I<2?28:22))+FVector(0,0,I<2?50:-60),New)){if(I>=2)New+=Normal*9;BeginContactMove(I,New);Reachable=false;StepTime=0;LimbStamina[I]=FMath::Max(0.f,LimbStamina[I]-.015f);}
-     else Reachable=false;
-    }else Reachable=false;
-   }
+   if(FVector::Dist(C->GetMesh()->GetSocketLocation(RootBone),G)>Reach(I)*.98f)continue;
+   int32 Other=0;bool OtherHand=false;for(int32 J=0;J<4;++J)if(J!=I && ContactActive[J]){++Other;if(J<2)OtherHand=true;}
+   if(ContactActive[I] && (Other<2 || !OtherHand))continue;
+   Best=I;BestGoal=G;Score=Lag;
   }
-  if(Reachable){FHitResult Hit;C->SetActorLocation(Candidate,true,&Hit);}
+  if(Best!=INDEX_NONE)BeginContactMove(Best,BestGoal);
+ }
+ const float DesiredSpeed=ActiveCount>=2?(MovingLimb==INDEX_NONE?34.f:12.f)*FMath::Lerp(.65f,1.f,Grip):0;
+ ClimbSpeed=FMath::FInterpTo(ClimbSpeed,Intent.IsNearlyZero()?0.f:DesiredSpeed,Dt,5.f);
+ FVector Move=Direction*ClimbSpeed*Dt;
+ // Project the requested displacement into the intersection of supporting limb reach spheres.
+ for(int32 Pass=0;Pass<3;++Pass)for(int32 I=0;I<4;++I)if(ContactActive[I]){
+  const FName RootBone=I==0?TEXT("upperarm_l"):I==1?TEXT("upperarm_r"):I==2?TEXT("thigh_l"):TEXT("thigh_r");
+  const FVector Root=C->GetMesh()->GetSocketLocation(RootBone),G=Wall->GetComponentTransform().TransformPosition(LocalContacts[I]);
+  const float Limit=FMath::Max(Reach(I)*.98f,FVector::Dist(Root,G));
+  const FVector Delta=Root+Move-G;if(Delta.Size()>Limit)Move+=Delta.GetSafeNormal()*Limit-Delta;
+ }
+ if(!Move.IsNearlyZero()){
+  FHitResult Hit;C->SetActorLocation(C->GetActorLocation()+Move,true,&Hit);
+  if(Hit.bBlockingHit && Intent.Y<0 && Hit.ImpactNormal.Z>.7f){ReleaseWall();C->GetCharacterMovement()->SetMovementMode(MOVE_Walking);Hint=TEXT("Feet on ground");return;}
  }
  // Relative load is distributed across actual supports, including unilateral hanging.
  float Capacity=0;int32 Feet=0,HandCount=0;
- for(int I=0;I<4;++I)if(ContactActive[I]){Capacity+=I<2?.7f:1.f;if(I>=2)++Feet;else ++HandCount;}
+ for(int I=0;I<4;++I)if(ContactActive[I]){Capacity+=(I<2?.55f:1.2f)*FMath::Max(.15f,LimbGrip[I]);if(I>=2)++Feet;else ++HandCount;}
  const float MassScale=FMath::Clamp(C->GetCharacterMovement()->Mass/80.f,.5f,2.f);
- for(int I=0;I<4;++I)SupportLoad[I]=ContactActive[I]?(I<2?.7f:1.f)/FMath::Max(Capacity,.01f):0;
+ for(int I=0;I<4;++I)SupportLoad[I]=ContactActive[I]?(I<2?.55f:1.2f)*FMath::Max(.15f,LimbGrip[I])/FMath::Max(Capacity,.01f):0;
  const float Side=(SupportLoad[1]+SupportLoad[3]-SupportLoad[0]-SupportLoad[2]);
- BodyOffset=FMath::VInterpTo(BodyOffset,Right*(Side*5)+FVector(0,0,Feet==0?-24:HandCount==1?-10:0),Dt,4.f);
+ const float Transfer=MovingLimb==INDEX_NONE?0.f:(MovingLimb%2?-1.f:1.f);
+ BodyOffset=FMath::VInterpTo(BodyOffset,Right*(Side*5+Transfer*3)+FVector(0,0,Feet==0?-16:HandCount==1?-5:0),Dt,4.f);
+ BodyTwist=FMath::FInterpTo(BodyTwist,Transfer*7.f+Side*5.f,Dt,4.f);
  float Total=0;
  for(int I=0;I<4;++I){
   if(!ContactActive[I]){LimbStamina[I]=FMath::Min(1.f,LimbStamina[I]+Dt*.06f);Total+=LimbStamina[I];continue;}

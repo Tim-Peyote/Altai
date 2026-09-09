@@ -1,6 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "AltaiGripProfile.h"
 #include "BoneControllers/AnimNode_SkeletalControlBase.h"
+#include "Core/PBIKBody.h"
+#include "Core/PBIKSolver.h"
 #include "AnimNode_AltaiContacts.generated.h"
 
 USTRUCT(BlueprintInternalUseOnly)
@@ -15,12 +18,36 @@ struct ALTAIENVIRONMENT_API FAnimNode_AltaiContacts : public FAnimNode_SkeletalC
  virtual bool IsValidToEvaluate(const USkeleton*,const FBoneContainer&) override{return true;}
  virtual void EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContext& Output,TArray<FBoneTransform>& Out) override;
 private:
+ FPBIKSolver ClimbSolver;
+ TArray<int32> SolverBones;
+ TArray<FTransform> ClimbReferenceLocal,ClimbBasePose;
+ bool ClimbWasActive=false;
+ float ClimbEntryElapsed=0,ClimbPoseAlpha=0,PoseDt=0,ClimbForearmRoll[2]={0,0};
+ FVector BendHistory[4]={FVector::ZeroVector,FVector::ZeroVector,FVector::ZeroVector,FVector::ZeroVector};
+ int32 HingeBones[4]={-1,-1,-1,-1},HingeAxes[4]={2,2,2,2};
+ float HingeMin[4]={0,0,0,0},HingeMax[4]={145,145,145,145};
+ int32 ClimbEffectors[4]={-1,-1,-1,-1};
+ int32 PelvisEffector=-1;
+ FVector BodyForward=FVector::ForwardVector;
  FBoneReference Ends[4],Pelvis,Spine;
  FVector BodyTranslation=FVector::ZeroVector,LeanAxis=FVector::RightVector;
- float Lean=0,CurlAlpha=0,GroundBrace=0,CrouchAlpha=0;
+ float TorsoTwist=0;
+ FVector TwistAxis=FVector::UpVector;
+ float FingerContact[2]={0,0};
+ float HandOrientationAlpha[2]={1,1};
+ float SupportAlpha[4]={0,0,0,0};
+ bool ClimbingPose=false,MantlePose=false,WallPose=false;
+ FVector WallPlane=FVector::ZeroVector;
+ FVector MantleLip=FVector::ZeroVector,MantleForward=FVector::ForwardVector,MantleUp=FVector::UpVector;
+ float Lean=0,CurlAlpha=0,GroundBrace=0,CrouchAlpha=0,SmallGrip=0;
  bool WasOrienting=false;
  TArray<FBoneReference> Fingers[2];
- TArray<FVector> FingerForward[2];
+ TArray<FVector> FingerForward[2],FingerFlexAxis[2];
+ TArray<FTransform> FingerReference[2];
+ TArray<int32> FingerDigits[2],FingerSegments[2];
+ FQuat WristReference[2];
+ FAltaiFingerGrasp FingerPose;
+ float LastWristError=0,LastForearmRoll=0,LastSignedRoll=0;
  FVector Goals[4],Poles[4];
  FQuat Orientations[2],HandBasis[2];
  bool Holding=false,OrientHands=false;

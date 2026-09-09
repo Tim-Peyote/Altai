@@ -15,7 +15,8 @@ public:
  UFUNCTION(BlueprintCallable) void SetFirstPerson(bool Enabled);
  UFUNCTION(BlueprintCallable) void ToggleView();
  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera") bool FirstPerson=false;
- UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera") float FirstPersonForward=30;
+ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera") float FirstPersonForward=8;
+ UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Camera") FVector InteractionEyeOffset=FVector::ZeroVector;
  virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
  UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<class USpringArmComponent> CameraBoom;
  UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<class UCameraComponent> FollowCamera;

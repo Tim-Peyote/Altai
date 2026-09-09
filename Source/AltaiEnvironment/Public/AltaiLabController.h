@@ -30,6 +30,8 @@ public:
 private:
  int OldPIEScreenOverride=-1;uint32 OldPIEScreenFlags=0;
  bool PreviousWallInput=true,PreviouslyPaused=false;
+ bool MouseGrab=false;
+ void ReleaseThrow();void StartRotateHeld();void StopRotateHeld();void ToggleHeldGrip();void HoldCloser();void HoldFarther();
  void PlaceHand();void ReleaseHand();void StartCrouch();void StopCrouch();void NextLimb();void Grab();void Climb();void ReleaseLedge();
  void Preset0();void Preset1();void Preset2();void Preset3();void Preset4();void Preset5();void Preset6();
  void Day();void Night();void AutoWeather();void Clock();void Later();void Earlier();void Reset();void ToggleHUD();void ToggleLightning();

@@ -50,6 +50,12 @@ void AAltaiLabController::SetupInputComponent()
  InputComponent->BindKey(EKeys::LeftControl,IE_Pressed,this,&AAltaiLabController::StartCrouch);
  InputComponent->BindKey(EKeys::LeftControl,IE_Released,this,&AAltaiLabController::StopCrouch);
  InputComponent->BindKey(EKeys::RightMouseButton,IE_Pressed,this,&AAltaiLabController::NextLimb);
+ InputComponent->BindKey(EKeys::RightMouseButton,IE_Released,this,&AAltaiLabController::ReleaseThrow);
+ InputComponent->BindKey(EKeys::R,IE_Pressed,this,&AAltaiLabController::StartRotateHeld);
+ InputComponent->BindKey(EKeys::R,IE_Released,this,&AAltaiLabController::StopRotateHeld);
+ InputComponent->BindKey(EKeys::T,IE_Pressed,this,&AAltaiLabController::ToggleHeldGrip);
+ InputComponent->BindKey(EKeys::MouseScrollUp,IE_Pressed,this,&AAltaiLabController::HoldFarther);
+ InputComponent->BindKey(EKeys::MouseScrollDown,IE_Pressed,this,&AAltaiLabController::HoldCloser);
  InputComponent->BindKey(FInputChord(EKeys::D,false,true,false,false),IE_Pressed,this,&AAltaiLabController::ToggleDeveloperPanel);
  InputComponent->BindKey(EKeys::F,IE_Pressed,this,&AAltaiLabController::Grab);
  InputComponent->BindKey(EKeys::E,IE_Pressed,this,&AAltaiLabController::Climb);
@@ -57,14 +63,25 @@ void AAltaiLabController::SetupInputComponent()
 
 }
 void AAltaiLabController::CycleBodyMass(){if(auto* C=Cast<ACharacter>(GetPawn())){auto* M=C->GetCharacterMovement();M->Mass=M->Mass>=119?60:M->Mass+20;}}
-void AAltaiLabController::PlaceHand(){if(WallClimbing && WallClimbing->Attached){WallClimbing->PlaceContact();return;}if(Hands)Hands->TryGrab(true);}
-void AAltaiLabController::ReleaseHand(){if(Hands && Hands->ConstrainedGrip)Hands->Release();}
+void AAltaiLabController::PlaceHand(){
+ if(WallClimbing && WallClimbing->Attached){WallClimbing->PlaceContact();return;}
+ if(!Hands)return;
+ if(!Hands->Held && !Hands->TryGrab(false))return;
+ MouseGrab=true;if(!Hands->ConstrainedGrip)Hands->BeginHandMotion();
+}
+void AAltaiLabController::ReleaseHand(){if(Hands && MouseGrab)Hands->Release();MouseGrab=false;}
 void AAltaiLabController::StartCrouch(){if((WallClimbing && WallClimbing->Attached)||(Traversal && Traversal->Climbing))return;if(auto* C=Cast<ACharacter>(GetPawn()))C->Crouch();}
 void AAltaiLabController::StopCrouch(){if(auto* C=Cast<ACharacter>(GetPawn()))C->UnCrouch();}
-void AAltaiLabController::NextLimb(){if(WallClimbing)WallClimbing->SelectNextLimb();}
-void AAltaiLabController::Grab(){if(Hands)Hands->ToggleGrab();}
+void AAltaiLabController::NextLimb(){if(WallClimbing && WallClimbing->Attached){WallClimbing->SelectNextLimb();return;}if(Hands)Hands->BeginChargeThrow();}
+void AAltaiLabController::ReleaseThrow(){if(Hands && Hands->ReleaseChargedThrow())MouseGrab=false;}
+void AAltaiLabController::StartRotateHeld(){if(Hands)Hands->SetHeldRotationMode(true);}
+void AAltaiLabController::StopRotateHeld(){if(Hands)Hands->SetHeldRotationMode(false);}
+void AAltaiLabController::ToggleHeldGrip(){if(Hands)Hands->SetTwoHandGrip(!Hands->TwoHands);}
+void AAltaiLabController::HoldCloser(){if(Hands)Hands->AdjustHoldDistance(-4.f);}
+void AAltaiLabController::HoldFarther(){if(Hands)Hands->AdjustHoldDistance(4.f);}
+void AAltaiLabController::Grab(){MouseGrab=false;if(Hands)Hands->ToggleGrab();}
 void AAltaiLabController::Climb(){if(auto* C=Cast<ACharacter>(GetPawn());C && C->bIsCrouched){if(Hands)Hands->Hint=TEXT("Stand up before climbing");return;}if(Hands && Hands->Held){Hands->Hint=TEXT("Put the object down before climbing");return;}if(WallClimbing && WallClimbing->Attached){if(Traversal)Traversal->TryClimbFromWall();return;}if(WallClimbing && WallClimbing->AttachWall())return;if(Traversal)Traversal->TryClimb();}
-void AAltaiLabController::ReleaseLedge(){if(WallClimbing)WallClimbing->ReleaseWall();if(Traversal)Traversal->CancelClimb();}
+void AAltaiLabController::ReleaseLedge(){if(WallClimbing && WallClimbing->Attached){WallClimbing->ReleaseWall();return;}if(Traversal){if(Traversal->Climbing)Traversal->CancelClimb();else Traversal->TryDescend();}}
 #define LAB_PRESET(N) void AAltaiLabController::Preset##N(){if(Weather){Weather->AutomaticWeather=false;Weather->SelectPreset(N);}}
 LAB_PRESET(0) LAB_PRESET(1) LAB_PRESET(2) LAB_PRESET(3) LAB_PRESET(4) LAB_PRESET(5) LAB_PRESET(6)
 #undef LAB_PRESET
@@ -82,6 +99,7 @@ void AAltaiLabController::Tick(float Dt)
 void AAltaiLabController::ToggleDeveloperPanel()
 {
  if(DeveloperPanel){CloseDeveloperPanel();return;}
+ MouseGrab=false;if(Hands)Hands->CancelManipulation();
  PreviouslyPaused=UGameplayStatics::IsGamePaused(this);
  if(auto* C=Cast<ACharacter>(GetPawn())){C->Tags.AddUnique(TEXT("AltaiDeveloperPanelOpen"));C->GetCharacterMovement()->StopMovementImmediately();if(!Hands || !Hands->Held)C->UnCrouch();}
  if(WallClimbing){PreviousWallInput=WallClimbing->InputFromPlayer;WallClimbing->InputFromPlayer=false;}
@@ -110,6 +128,14 @@ void AAltaiLabHUD::DrawHUD()
  const FLinearColor Gold(.75,.67,.46),White(.8,.85,.82);
  DrawRect(Gold,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
  DrawText(TEXT("Ctrl+D  ·  Панель разработчика"),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
+ FString ActionHint=PC->Hands?PC->Hands->Hint:FString();
+ if(PC->Traversal && PC->Traversal->Climbing)ActionHint=PC->Traversal->Hint;
+ else if(PC->WallClimbing && PC->WallClimbing->Attached){
+  auto* Wall=PC->WallClimbing.Get();const TCHAR* Names[]={TEXT("Left hand"),TEXT("Right hand"),TEXT("Left foot"),TEXT("Right foot")};
+  ActionHint=FString::Printf(TEXT("%s: %s | RMB select / LMB reach / Q rest | S down / E top"),Names[FMath::Clamp(Wall->SelectedLimb,0,3)],Wall->MovingLimb==Wall->SelectedLimb?TEXT("reaching"):Wall->ContactActive[Wall->SelectedLimb]?TEXT("support"):TEXT("free"));
+ }else if(PC->Traversal && PC->Traversal->CanClimb && (!PC->Hands || !PC->Hands->Held))ActionHint=PC->Traversal->Hint;
+ if(!ActionHint.IsEmpty())DrawText(ActionHint,White,Canvas->ClipX*.5f-220,Canvas->ClipY*.5f+40,GEngine->GetSmallFont(),1.1f);
+ if(PC->Hands && PC->Hands->ChargingThrow){DrawRect(FLinearColor(.04,.05,.05,.8),Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140,4);DrawRect(Gold,Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140*PC->Hands->ThrowCharge,4);}
  if(PC->ShowDiagnostics){
   DrawRect(FLinearColor(.015,.022,.021,.85),24,24,340,82);
   DrawText(FString::Printf(TEXT("%.0f FPS  |  %.1f ms"),1.f/FMath::Max(PC->FrameSeconds,.001f),PC->FrameSeconds*1000),Gold,36,34,GEngine->GetSmallFont());

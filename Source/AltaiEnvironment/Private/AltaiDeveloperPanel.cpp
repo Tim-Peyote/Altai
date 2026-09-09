@@ -59,7 +59,7 @@ TSharedRef<SWidget> UAltaiDeveloperPanel::Character()
  V->AddSlot().AutoHeight()[Row(TEXT("Время жизни следа, с"),SNew(SSpinBox<float>).Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).MinValue(5).MaxValue(300).Delta(5).Value_Lambda([S]{return S->FootprintLifetime;}).OnValueChanged_Lambda([S](float F){S->FootprintLifetime=F;}))];
  V->AddSlot().AutoHeight().Padding(0,8)[Button(TEXT("Очистить следы и круги на воде"),[S]{S->ClearFootprints();})];}
  V->AddSlot().AutoHeight()[Section(TEXT("УПРАВЛЕНИЕ В ПОЛИГОНЕ"))];
- V->AddSlot().AutoHeight()[Label(TEXT("V — сменить вид · Ctrl — присесть\nF — взять / отпустить предмет\nЛКМ + движение мыши — тянуть ручку мебели\nE — начать лазание / выйти на уступ\nC — отпустить скалу · Space — отпрыгнуть\nПКМ — выбрать конечность · ЛКМ — поставить опору\nQ — освободить выбранную конечность"),14,Muted)];
+ V->AddSlot().AutoHeight()[Label(TEXT("V — сменить вид · Ctrl — присесть\nF — взять / отпустить предмет\nЛКМ + мышь — двигать рукой; отпускание — бросок по инерции\nПКМ удерживать / отпустить — замах / бросок\nR + мышь — наклонять кисть в пределах хвата\nКолесо — ближе / дальше; с R — поворачивать предплечье\nT — одна / две руки (с учётом массы)\nЛКМ + движение мыши — тянуть ручку мебели\nE — начать лазание / выйти на уступ\nC — свеситься с края / отпустить скалу · Space — отпрыгнуть\nПКМ — выбрать конечность · ЛКМ — поставить опору\nQ — освободить выбранную конечность"),14,Muted)];
  return V;
 }
 TSharedRef<SWidget> UAltaiDeveloperPanel::Diagnostics()
@@ -72,13 +72,17 @@ TSharedRef<SWidget> UAltaiDeveloperPanel::Diagnostics()
  V->AddSlot().AutoHeight()[Stat(TEXT("Масса / скорость с грузом"),[H]{return FString::Printf(TEXT("%.1f кг / %.0f%%"),H->HeldMass,H->CarrySpeedScale*100);})];
  V->AddSlot().AutoHeight()[Stat(TEXT("Выносливость / влажность рук"),[H]{return FString::Printf(TEXT("%.0f%% / %.0f%%"),H->Stamina*100,H->Wetness*100);})];
  V->AddSlot().AutoHeight()[Stat(TEXT("Отклонение хвата / баланс"),[H]{return FString::Printf(TEXT("%.1f см / %.0f%%"),H->PositionError,H->BalanceDemand*100);})];}
+ if(H){V->AddSlot().AutoHeight()[Stat(TEXT("Режим рук"),[H]{return H->RotatingHeld?FString(TEXT("Вращение")):(H->ChargingThrow?FString(TEXT("Замах")):(H->MovingHand?FString(TEXT("Движение рукой")):(H->TwoHands?FString(TEXT("Две руки")):FString(TEXT("Одна рука")))));})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Последний бросок"),[H]{return FString::Printf(TEXT("%.1f м/с · %.0f Дж · %.2f кг"),H->LastThrowSpeed/100.f,H->LastThrowEnergy,H->LastThrowMass);})];}
+ if(H){V->AddSlot().AutoHeight()[Stat(TEXT("Поворот руки / предел"),[H]{return FString::Printf(TEXT("%.0f / %.0f / %.0f° · %.0f%%"),H->GripAngles.X,H->GripAngles.Y,H->GripAngles.Z,H->GripRotationEffort*100);})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Предплечье / ошибка кисти"),[H]{return FString::Printf(TEXT("%.0f° / %.1f°"),H->ForearmRoll,H->WristTrackingError);})];}
  V->AddSlot().AutoHeight()[Section(TEXT("ЛАЗАНИЕ"))];
- if(W){V->AddSlot().AutoHeight()[Stat(TEXT("Состояние"),[W,T]{return W->Attached?FString(TEXT("На скале")):(T && T->Climbing?FString(TEXT("Выход на уступ")):FString(TEXT("Свободное движение")));})];
+ if(W){V->AddSlot().AutoHeight()[Stat(TEXT("Состояние"),[W,T]{return W->Attached?FString(TEXT("На скале")):(T && T->Climbing?FString(T->Descending?TEXT("Свешивание с края"):TEXT("Выход на уступ")):FString(TEXT("Свободное движение")));})];
  V->AddSlot().AutoHeight()[Stat(TEXT("Сцепление / выносливость"),[W]{return FString::Printf(TEXT("%.0f%% / %.0f%%"),W->Grip*100,W->Stamina*100);})];
  V->AddSlot().AutoHeight()[Stat(TEXT("Влажность скалы / срывы"),[W]{return FString::Printf(TEXT("%.0f%% / %d"),W->Wetness*100,W->Slips);})];
  const TCHAR* Limbs[]={TEXT("Левая рука"),TEXT("Правая рука"),TEXT("Левая нога"),TEXT("Правая нога")};
  for(int I=0;I<4;++I)V->AddSlot().AutoHeight()[Stat(Limbs[I],[W,I]{const bool A=W->Attached && W->ContactActive.IsValidIndex(I) && W->ContactActive[I];return FString::Printf(TEXT("%s%s · нагрузка %.0f%%"),W->SelectedLimb==I?TEXT("▸ "):TEXT(""),W->MovingLimb==I?TEXT("Тянется"):(A?TEXT("Опора"):TEXT("Свободна")),W->SupportLoad.IsValidIndex(I)?W->SupportLoad[I]*100:0);})];}
- if(T)V->AddSlot().AutoHeight()[Stat(TEXT("Завершено подъёмов"),[T]{return FString::FromInt(T->CompletedClimbs);})];
+ if(T)V->AddSlot().AutoHeight()[Stat(TEXT("Подъёмы / спуски с края"),[T]{return FString::Printf(TEXT("%d / %d"),T->CompletedClimbs,T->CompletedDescents);})];
  V->AddSlot().AutoHeight()[Section(TEXT("ПОВЕРХНОСТЬ"))];
  if(S){V->AddSlot().AutoHeight()[Stat(TEXT("Под ногами / скорость"),[S]{const TCHAR* N[]={TEXT("Земля"),TEXT("Камень"),TEXT("Грязь"),TEXT("Вода"),TEXT("Снег"),TEXT("Дерево")};return FString::Printf(TEXT("%s / %.0f%%"),N[FMath::Clamp(int(S->CurrentSurface),0,5)],S->SpeedScale*100);})];
  V->AddSlot().AutoHeight()[Stat(TEXT("Шаги / спотыкания"),[S]{return FString::Printf(TEXT("%d / %d"),S->StepCount,S->StumbleCount);})];}

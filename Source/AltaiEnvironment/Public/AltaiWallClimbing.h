@@ -13,6 +13,9 @@ public:
  virtual void TickComponent(float Dt,ELevelTick T,FActorComponentTickFunction* F) override;
  UFUNCTION(BlueprintCallable) bool AttachWall();
  UFUNCTION(BlueprintCallable) void ReleaseWall();
+ bool AttachFromLedge(class UPrimitiveComponent* Surface,const FVector& Outward,const TArray<FVector>& Contacts);
+ UPROPERTY(VisibleAnywhere,BlueprintReadOnly) float BodyTwist=0;
+ UPROPERTY(VisibleAnywhere,BlueprintReadOnly) float ClimbSpeed=0;
  UFUNCTION(BlueprintCallable) bool PlaceContact();
  UFUNCTION(BlueprintCallable) void SelectNextLimb();
  UFUNCTION(BlueprintCallable) void ReleaseSelectedContact();
@@ -35,6 +38,7 @@ public:
  UPROPERTY(EditAnywhere,BlueprintReadWrite) bool AssistedStepping=true;
  UPROPERTY(EditAnywhere,BlueprintReadWrite) bool InputFromPlayer=true;
 private:
+ bool StartAttachment(const TArray<FVector>& Goals,bool Sequential);
  bool Probe(const FVector& Desired,FVector& Hit) const;
  void UpdateContacts(float Dt);
  bool BeginContactMove(int32 Limb,const FVector& Goal);
@@ -51,6 +55,8 @@ private:
  TArray<FVector> DisplayContacts;
  float ContactElapsed=0;
  float ContactDuration=.38f;
+ float SettleTime=0;
+ int32 LastStep=3;
  FVector2D SmoothedIntent=FVector2D::ZeroVector;
  float SlipTime=0,StepTime=0,IntentExpiry=0;
  FVector2D TestIntent=FVector2D::ZeroVector;
