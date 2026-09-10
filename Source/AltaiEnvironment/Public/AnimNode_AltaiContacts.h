@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "AltaiGripProfile.h"
+#include "Animation/PoseSnapshot.h"
 #include "BoneControllers/AnimNode_SkeletalControlBase.h"
 #include "Core/PBIKBody.h"
 #include "Core/PBIKSolver.h"
@@ -18,6 +19,13 @@ struct ALTAIENVIRONMENT_API FAnimNode_AltaiContacts : public FAnimNode_SkeletalC
  virtual bool IsValidToEvaluate(const USkeleton*,const FBoneContainer&) override{return true;}
  virtual void EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContext& Output,TArray<FBoneTransform>& Out) override;
 private:
+ FPoseSnapshot BodySnapshot;
+ FVector RecoveryOffset=FVector::ZeroVector,RecoveryGoals[4],RecoveryNormals[4],RecoveryEndUp[4];
+ FQuat RecoveryTilt=FQuat::Identity;
+ float RecoveryWeights[4]={0,0,0,0};
+ bool RecoveringBody=false,SimulatingBody=false;
+ float BodyRecovery=0,BodyAcquire=.45f,StumbleAlpha=0;
+ UPROPERTY() TObjectPtr<class UAnimSequence> BodyAnimation;
  FPBIKSolver ClimbSolver;
  TArray<int32> SolverBones;
  TArray<FTransform> ClimbReferenceLocal,ClimbBasePose;

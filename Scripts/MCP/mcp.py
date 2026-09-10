@@ -1,5 +1,5 @@
-import urllib.request,json,sys
-URL='http://127.0.0.1:8000/mcp'
+import urllib.request,json,sys,os
+URL=os.environ.get('ALTAI_MCP_URL','http://127.0.0.1:8000/mcp')
 def request(method,params,session=None):
  h={'Content-Type':'application/json','Accept':'application/json, text/event-stream'}
  if session:h['Mcp-Session-Id']=session

@@ -1,4 +1,5 @@
 #include "AltaiLabController.h"
+#include "AltaiBodyDynamics.h"
 #include "AltaiDeveloperPanel.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Misc/App.h"
@@ -40,6 +41,7 @@ void AAltaiLabController::BeginPlay()
   Hands=NewObject<UAltaiHands>(C,TEXT("LabHands"));Hands->RegisterComponent();
   WallClimbing=NewObject<UAltaiWallClimbing>(C,TEXT("LabWallClimbing"));WallClimbing->RegisterComponent();
   Traversal=NewObject<UAltaiTraversal>(C,TEXT("LabTraversal"));Traversal->RegisterComponent();
+  BodyDynamics=NewObject<UAltaiBodyDynamics>(C,TEXT("LabBodyDynamics"));BodyDynamics->RegisterComponent();
  }
 }
 void AAltaiLabController::SetupInputComponent()
@@ -70,7 +72,7 @@ void AAltaiLabController::PlaceHand(){
  MouseGrab=true;if(!Hands->ConstrainedGrip)Hands->BeginHandMotion();
 }
 void AAltaiLabController::ReleaseHand(){if(Hands && MouseGrab)Hands->Release();MouseGrab=false;}
-void AAltaiLabController::StartCrouch(){if((WallClimbing && WallClimbing->Attached)||(Traversal && Traversal->Climbing))return;if(auto* C=Cast<ACharacter>(GetPawn()))C->Crouch();}
+void AAltaiLabController::StartCrouch(){if(BodyDynamics && BodyDynamics->OwnsBody())return;if((WallClimbing && WallClimbing->Attached)||(Traversal && Traversal->Climbing))return;if(auto* C=Cast<ACharacter>(GetPawn()))C->Crouch();}
 void AAltaiLabController::StopCrouch(){if(auto* C=Cast<ACharacter>(GetPawn()))C->UnCrouch();}
 void AAltaiLabController::NextLimb(){if(WallClimbing && WallClimbing->Attached){WallClimbing->SelectNextLimb();return;}if(Hands)Hands->BeginChargeThrow();}
 void AAltaiLabController::ReleaseThrow(){if(Hands && Hands->ReleaseChargedThrow())MouseGrab=false;}

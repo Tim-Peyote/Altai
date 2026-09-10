@@ -1,4 +1,7 @@
 #include "AnimNode_AltaiContacts.h"
+#include "AltaiBodyDynamics.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/AttributeTypes.h"
 #include "AltaiHands.h"
 #include "AltaiWallClimbing.h"
 #include "AltaiTraversal.h"
@@ -35,7 +38,9 @@ void FAnimNode_AltaiContacts::InitializeBoneReferences(const FBoneContainer& B)
   ClimbReferenceLocal.Add(Ref.GetRefBonePose()[MeshIndex]);
   SolverBones.Add(ClimbSolver.AddBone(Name,B.GetParentBoneIndex(Compact).GetInt(),T.GetLocation(),T.GetRotation(),Name==Pelvis.BoneName));
  }
- for(int32 I=0;I<4;++I)ClimbEffectors[I]=ClimbSolver.AddEffector(Ends[I].BoneName);
+ for(int32 I=0;I<4;++I){ClimbEffectors[I]=ClimbSolver.AddEffector(Ends[I].BoneName);
+  RecoveryEndUp[I]=Reference[Ref.FindBoneIndex(Ends[I].BoneName)].GetRotation().Inverse().RotateVector(FVector::UpVector);
+ }
  PelvisEffector=ClimbSolver.AddEffector(Pelvis.BoneName);
  if(ClimbSolver.Initialize()){
   for(int32 I=0;I<4;++I){
@@ -110,8 +115,20 @@ void FAnimNode_AltaiContacts::InitializeBoneReferences(const FBoneContainer& B)
 }
 void FAnimNode_AltaiContacts::PreUpdate(const UAnimInstance* Instance)
 {
- Holding=false;OrientHands=false;
+ Holding=false;OrientHands=false;RecoveringBody=false;SimulatingBody=false;StumbleAlpha=0;
  auto* Mesh=Instance->GetSkelMeshComponent();auto* Owner=Mesh?Mesh->GetOwner():nullptr;
+ if(auto* Body=Owner?Owner->FindComponentByClass<UAltaiBodyDynamics>():nullptr;Body && Body->OwnsBody()){
+  RecoveringBody=Body->State==EAltaiBodyState::GettingUp;SimulatingBody=!RecoveringBody;
+  BodyAnimation=Body->RecoveryMotion();BodySnapshot=Body->RecoverySnapshot;BodyRecovery=Body->RecoveryProgress;BodyAcquire=Body->RecoveryAcquire;
+  const FTransform Transform=Mesh->GetComponentTransform();
+  RecoveryOffset=Transform.InverseTransformVectorNoScale(Body->RecoveryGroundOffset);
+  RecoveryTilt=Transform.GetRotation().Inverse()*Body->RecoveryGroundRotation*Transform.GetRotation();
+  for(int32 I=0;I<4;++I){RecoveryWeights[I]=0;if(Body->RecoveryContacts.IsValidIndex(I)){
+   const auto& Contact=Body->RecoveryContacts[I];RecoveryWeights[I]=Contact.Weight;
+   RecoveryGoals[I]=Transform.InverseTransformPosition(Contact.Goal);RecoveryNormals[I]=Transform.InverseTransformVectorNoScale(Contact.Normal);
+  }}
+  ClimbingPose=ClimbWasActive=MantlePose=WallPose=false;ClimbPoseAlpha=0;ClimbBasePose.Reset();return;
+ }
  auto* Hands=Owner?Owner->FindComponentByClass<UAltaiHands>():nullptr;
  if(!Hands || Hands->ContactGoals.Num()!=4){for(float& Weight:Weights)Weight=0;return;}
  // The lab mesh evaluates after physics: sample the solved rigid-body pose here.
@@ -196,11 +213,96 @@ void FAnimNode_AltaiContacts::PreUpdate(const UAnimInstance* Instance)
   }
   Poles[I]=WasOrienting?FMath::VInterpTo(Poles[I],World.InverseTransformPosition(Pole),Dt,10.f):World.InverseTransformPosition(Pole);
  }
+ if(auto* Body=Owner->FindComponentByClass<UAltaiBodyDynamics>())StumbleAlpha=ActiveClimb?0:Body->Reaction;
  WasOrienting=OrientHands;
 }
 void FAnimNode_AltaiContacts::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContext& Output,TArray<FBoneTransform>& Out)
 {
+ if(SimulatingBody)return;
  const auto& Bones=Output.Pose.GetPose().GetBoneContainer();
+ if(RecoveringBody && BodyAnimation){
+  FCompactPose Pose;Pose.SetBoneContainer(&Bones);FBlendedCurve Curve;Curve.InitFrom(Bones);
+  UE::Anim::FStackAttributeContainer Attributes;FAnimationPoseData Data(Pose,Curve,Attributes);
+  const float Length=BodyAnimation->GetPlayLength(),Time=BodyRecovery*(Length+BodyAcquire+.2f);
+  BodyAnimation->GetAnimationPose(Data,FAnimExtractContext(FMath::Clamp(Time-BodyAcquire,0.f,Length),false));
+  const float Acquire=FMath::SmoothStep(0.f,BodyAcquire,Time),Stand=FMath::SmoothStep(Length+BodyAcquire,Length+BodyAcquire+.2f,Time);
+  TArray<FTransform> World;
+  for(int32 I=0;I<Bones.GetCompactPoseNumBones();++I){const FCompactPoseBoneIndex Index(I),Parent=Bones.GetParentBoneIndex(Index);FTransform Local=Pose[Index];
+   const int32 SnapshotIndex=BodySnapshot.BoneNames.IndexOfByKey(Bones.GetReferenceSkeleton().GetBoneName(Bones.MakeMeshPoseIndex(Index).GetInt()));
+   if(BodySnapshot.bIsValid && BodySnapshot.LocalTransforms.IsValidIndex(SnapshotIndex))Local.Blend(BodySnapshot.LocalTransforms[SnapshotIndex],Local,Acquire);
+   Local.Blend(Local,Output.Pose.GetLocalSpaceTransform(Index),Stand);
+   World.Add(Parent==INDEX_NONE?Local:Local*World[Parent.GetInt()]);
+  }
+  const float TerrainAlpha=Acquire*(1-Stand);
+  const FVector Pivot=World[Pelvis.GetCompactPoseIndex(Bones).GetInt()].GetLocation();
+  const FQuat Tilt=FQuat::Slerp(FQuat::Identity,RecoveryTilt,TerrainAlpha);
+  for(auto& T:World){T.SetLocation(Pivot+RecoveryOffset*TerrainAlpha+Tilt.RotateVector(T.GetLocation()-Pivot));T.SetRotation(Tilt*T.GetRotation());}
+  auto SetBone=[&](int32 Index,const FTransform& Transform){
+   const FTransform Before=World[Index];World[Index]=Transform;
+   for(int32 J=Index+1;J<World.Num();++J){int32 Parent=Bones.GetParentBoneIndex(FCompactPoseBoneIndex(J)).GetInt();
+    while(Parent>=0 && Parent!=Index)Parent=Bones.GetParentBoneIndex(FCompactPoseBoneIndex(Parent)).GetInt();
+    if(Parent==Index)World[J]=World[J].GetRelativeTransform(Before)*Transform;
+   }
+  };
+  auto LimitTwist=[](FQuat Delta,FVector Axis,float Limit){
+   Axis.Normalize();const float Projection=FVector::DotProduct(FVector(Delta.X,Delta.Y,Delta.Z),Axis);
+   FQuat Twist(Axis.X*Projection,Axis.Y*Projection,Axis.Z*Projection,Delta.W);
+   if(Twist.SizeSquared()<SMALL_NUMBER)return Delta;Twist.Normalize();
+   const float Angle=FMath::UnwindRadians(2*FMath::Atan2(FVector::DotProduct(FVector(Twist.X,Twist.Y,Twist.Z),Axis),Twist.W));
+   return (Delta*Twist.Inverse()*FQuat(Axis,FMath::Clamp(Angle,-FMath::DegreesToRadians(Limit),FMath::DegreesToRadians(Limit)))).GetNormalized();
+  };
+  for(int32 I=0;I<4;++I){
+   const float Weight=RecoveryWeights[I]*TerrainAlpha;if(Weight<.001f)continue;
+   const int32 E=Ends[I].GetCompactPoseIndex(Bones).GetInt(),J=Bones.GetParentBoneIndex(FCompactPoseBoneIndex(E)).GetInt(),A=Bones.GetParentBoneIndex(FCompactPoseBoneIndex(J)).GetInt();
+   const int32 Parent=Bones.GetParentBoneIndex(FCompactPoseBoneIndex(A)).GetInt();
+   FTransform Upper=World[A],Lower=World[J],End=World[E];
+   const FVector UL=ClimbReferenceLocal[J].GetLocation(),LL=ClimbReferenceLocal[E].GetLocation();
+   const float L1=UL.Size(),L2=LL.Size();
+   FVector Target=FMath::Lerp(End.GetLocation(),RecoveryGoals[I],double(Weight));const FVector Axis=(Target-Upper.GetLocation()).GetSafeNormal();
+   const float Min=FMath::Sqrt(L1*L1+L2*L2+2*L1*L2*FMath::Cos(FMath::DegreesToRadians(140.f)));
+   const float Max=FMath::Sqrt(L1*L1+L2*L2+2*L1*L2*FMath::Cos(FMath::DegreesToRadians(2.f)));
+   const float D=FMath::Clamp(float(FVector::Dist(Target,Upper.GetLocation())),Min,Max);Target=Upper.GetLocation()+Axis*D;
+   const FVector Hinge=FVector::VectorPlaneProject(Upper.GetRotation().GetAxisZ(),Axis).GetSafeNormal();if(Hinge.IsNearlyZero())continue;
+   const FVector Bend=FVector::CrossProduct(Axis,Hinge).GetSafeNormal();const float Along=(L1*L1-L2*L2+D*D)/(2*D);
+   const FVector Joint=Upper.GetLocation()+Axis*Along+Bend*FMath::Sqrt(FMath::Max(0.f,L1*L1-Along*Along));
+   FQuat U=FRotationMatrix::MakeFromXZ(Joint-Upper.GetLocation(),Hinge).ToQuat()*FRotationMatrix::MakeFromXZ(UL,FVector::UpVector).ToQuat().Inverse();
+   FQuat L=FRotationMatrix::MakeFromXZ(Target-Joint,Hinge).ToQuat()*FRotationMatrix::MakeFromXZ(LL,FVector::UpVector).ToQuat().Inverse();
+   const FQuat Reference=ClimbReferenceLocal[A].GetRotation(),ParentQ=World[Parent].GetRotation();
+   // Find a nearby anatomical bend plane that reaches the contact exactly.
+   // Clamping a single proposed plane can leave a loaded palm floating above it.
+   float BestCost=FLT_MAX;FQuat BestU=U,BestL=L;
+   for(int32 Sample=-15;Sample<=15;++Sample){
+    const FVector Normal=FQuat(Axis,FMath::DegreesToRadians(Sample*3.f)).RotateVector(Hinge);
+    const FVector K=Upper.GetLocation()+Axis*Along+FVector::CrossProduct(Axis,Normal).GetSafeNormal()*FMath::Sqrt(FMath::Max(0.f,L1*L1-Along*Along));
+    const FQuat CandidateU=FRotationMatrix::MakeFromXZ(K-Upper.GetLocation(),Normal).ToQuat()*FRotationMatrix::MakeFromXZ(UL,FVector::UpVector).ToQuat().Inverse();
+    const FQuat CandidateL=FRotationMatrix::MakeFromXZ(Target-K,Normal).ToQuat()*FRotationMatrix::MakeFromXZ(LL,FVector::UpVector).ToQuat().Inverse();
+    const FQuat Delta=Reference.Inverse()*ParentQ.Inverse()*CandidateU;
+    if(Delta.AngularDistance(LimitTwist(Delta,UL,I<2?100.f:75.f))>.001f || Upper.GetRotation().AngularDistance(CandidateU)>FMath::DegreesToRadians(30.f))continue;
+    const float Cost=FMath::Square(Upper.GetRotation().AngularDistance(CandidateU))+.25f*FMath::Square(Lower.GetRotation().AngularDistance(CandidateL));
+    if(Cost<BestCost){BestCost=Cost;BestU=CandidateU;BestL=CandidateL;}
+   }
+   if(BestCost<FLT_MAX){U=BestU;L=BestL;}
+   else{
+    const FQuat Safe=ParentQ*Reference*LimitTwist(Reference.Inverse()*ParentQ.Inverse()*U,UL,I<2?100.f:75.f);
+    const float Change=Upper.GetRotation().AngularDistance(Safe);const FQuat Bounded=FQuat::Slerp(Upper.GetRotation(),Safe,FMath::Min(1.f,FMath::DegreesToRadians(25.f)/FMath::Max(Change,.0001f)));
+    L=Bounded*U.Inverse()*L;U=Bounded;
+   }
+   Upper.SetRotation(U);Lower.SetRotation(L);Lower.SetLocation(Upper.TransformPosition(UL));End.SetLocation(Lower.TransformPosition(LL));
+   // Rotate toward the support normal within the wrist/ankle envelope.
+   const FVector CurrentNormal=End.GetRotation().RotateVector(I<2?HandBasis[I].GetAxisZ():RecoveryEndUp[I]);
+   const FVector DesiredNormal=RecoveryNormals[I]*(I<2?-1.f:1.f);
+   const FQuat Desired=FQuat::FindBetweenNormals(CurrentNormal,DesiredNormal)*End.GetRotation();
+   const FQuat EndReference=ClimbReferenceLocal[E].GetRotation();
+   FQuat Delta=EndReference.Inverse()*L.Inverse()*Desired;
+   if(I<2)Delta=LimitTwist(Delta,HandBasis[I].GetAxisX(),15.f);
+   const float Angle=Delta.AngularDistance(FQuat::Identity),Limit=FMath::DegreesToRadians(I<2?70.f:50.f);
+   Delta=FQuat::Slerp(FQuat::Identity,Delta,FMath::Min(1.f,Limit/FMath::Max(Angle,.0001f)));
+   End.SetRotation(FQuat::Slerp(End.GetRotation(),L*EndReference*Delta,Weight));
+   SetBone(A,Upper);SetBone(J,Lower);SetBone(E,End);
+  }
+  for(int32 I=0;I<World.Num();++I)Out.Emplace(FCompactPoseBoneIndex(I),World[I]);
+  return;
+ }
  TMap<int32,FTransform> Poses;LastWristError=LastForearmRoll=0;
  FVector ClimbInputGoals[4]={Goals[0],Goals[1],Goals[2],Goals[3]};
  if(ClimbingPose && ClimbBasePose.Num()!=Bones.GetCompactPoseNumBones()){
@@ -220,7 +322,8 @@ void FAnimNode_AltaiContacts::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
   FTransform Pose=Parent==INDEX_NONE?Local:Local*(Poses.Contains(Parent.GetInt())?Poses[Parent.GetInt()]:Output.Pose.GetComponentSpaceTransform(Parent));bool Changed=ClimbingPose || Poses.Contains(Parent.GetInt());
   if(Pelvis.IsValidToEvaluate(Bones) && Index==Pelvis.GetCompactPoseIndex(Bones)){Pose.AddToTranslation(SupportedTranslation);Pose.SetRotation(FQuat(LeanAxis,ClimbingPose?Lean*.2f:0.f)*FQuat(TwistAxis,TorsoTwist)*Pose.GetRotation());Changed=true;}
   const FString BoneName=Bones.GetReferenceSkeleton().GetBoneName(Bones.MakeMeshPoseIndex(Index).GetInt()).ToString();
-  if((ClimbingPose && BoneName.StartsWith(TEXT("spine_"))) || (!ClimbingPose && Spine.IsValidToEvaluate(Bones) && Index==Spine.GetCompactPoseIndex(Bones))){Pose.SetRotation(FQuat(LeanAxis,ClimbingPose?Lean*.16f:Lean)*Pose.GetRotation());Changed=true;}
+  if((ClimbingPose && BoneName.StartsWith(TEXT("spine_"))) || (!ClimbingPose && Spine.IsValidToEvaluate(Bones) && Index==Spine.GetCompactPoseIndex(Bones))){Pose.SetRotation(FQuat(LeanAxis,ClimbingPose?Lean*.16f:Lean+FMath::DegreesToRadians(22.f)*StumbleAlpha)*Pose.GetRotation());Changed=true;}
+  if(StumbleAlpha>.001f && !ClimbingPose && !Holding && BoneName.StartsWith(TEXT("upperarm_"))){Pose.SetRotation(FQuat(LeanAxis,-FMath::DegreesToRadians(35.f)*StumbleAlpha)*Pose.GetRotation());Changed=true;}
   if(Changed)Poses.Add(I,Pose);
  }
  auto GetPose=[&](FCompactPoseBoneIndex Index){if(const auto* P=Poses.Find(Index.GetInt()))return *P;return Output.Pose.GetComponentSpaceTransform(Index);};

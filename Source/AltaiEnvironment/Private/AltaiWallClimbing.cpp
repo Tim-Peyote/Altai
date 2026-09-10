@@ -32,6 +32,7 @@ bool UAltaiWallClimbing::Probe(const FVector& Desired,FVector& Point) const
 }
 bool UAltaiWallClimbing::AttachWall()
 {
+ if(GetOwner()->ActorHasTag(TEXT("AltaiBodyUnbalanced")))return false;
  if(Attached)return true;
  if(auto* Traversal=GetOwner()->FindComponentByClass<UAltaiTraversal>();Traversal && Traversal->Climbing)return false;
  if(!Character.IsValid() || !Hands.IsValid() || Hands->Held)return false;

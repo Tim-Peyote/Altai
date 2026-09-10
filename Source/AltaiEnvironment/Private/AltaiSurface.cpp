@@ -1,4 +1,5 @@
 #include "AltaiSurface.h"
+#include "AltaiBodyDynamics.h"
 #include "AltaiHands.h"
 #include "AltaiFootstepFX.h"
 #include "CollisionShape.h"
@@ -73,11 +74,11 @@ void UAltaiSurfaceResponse::TickComponent(float Dt,ELevelTick Type,FActorCompone
   const FVector Direction=C->GetVelocity().GetSafeNormal2D();
   FVector Start=PreviousPosition-FVector(0,0,C->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
   Start.Z=FMath::Min(Start.Z,Feet.Z)+18;
-  FVector End=Feet+Direction*140;End.Z=Start.Z;
+  FVector End=Feet+Direction*(C->GetCapsuleComponent()->GetScaledCapsuleRadius()+18);End.Z=Start.Z;
   FHitResult Low,High;
   if(GetWorld()->SweepSingleByChannel(Low,Start,End,FQuat::Identity,ECC_Visibility,FCollisionShape::MakeSphere(8),Query) && Low.ImpactNormal.Z<.45f
    && !GetWorld()->LineTraceSingleByChannel(High,Start+FVector(0,0,70),End+FVector(0,0,70),ECC_Visibility,Query))
-  {StumbleTimer=.45f;StumbleCooldown=1.5f;Move->Velocity*=.4f;++StumbleCount;}
+  {StumbleTimer=.45f;StumbleCooldown=1.5f;if(auto* Body=C->FindComponentByClass<UAltaiBodyDynamics>())Body->Trip(Low);else Move->Velocity*=.4f;++StumbleCount;}
  }
  auto* Hands=C->FindComponentByClass<UAltaiHands>();
  const float LoadSpeed=Hands?Hands->CarrySpeedScale:1.f,LoadAcceleration=Hands?Hands->CarryAccelerationScale:1.f;

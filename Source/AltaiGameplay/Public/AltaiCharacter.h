@@ -10,7 +10,7 @@ class ALTAIGAMEPLAY_API AAltaiCharacter : public ACharacter
 {
  GENERATED_BODY()
 public:
- AAltaiCharacter();
+ AAltaiCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
  virtual void Tick(float DeltaSeconds) override;
  UFUNCTION(BlueprintCallable) void SetFirstPerson(bool Enabled);
  UFUNCTION(BlueprintCallable) void ToggleView();

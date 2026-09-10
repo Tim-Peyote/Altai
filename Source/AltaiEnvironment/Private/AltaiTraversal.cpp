@@ -77,11 +77,13 @@ bool UAltaiTraversal::TryClimbFromWall()
 }
 bool UAltaiTraversal::TryClimb()
 {
+ if(GetOwner()->ActorHasTag(TEXT("AltaiBodyUnbalanced")))return false;
  if(Climbing)return false;if(auto* H=GetOwner()->FindComponentByClass<UAltaiHands>();H && H->Held)return false;
  if(!FindLedge(Finish)){CanClimb=false;return false;}FromWall=false;Descending=false;return BeginClimb();
 }
 bool UAltaiTraversal::TryDescend()
 {
+ if(GetOwner()->ActorHasTag(TEXT("AltaiBodyUnbalanced")))return false;
  auto* C=Character.Get();auto* H=GetOwner()->FindComponentByClass<UAltaiHands>();
  if(!C || Climbing || !H || H->Held || C->bIsCrouched || !C->GetCharacterMovement()->IsMovingOnGround())return false;
  auto* Cap=C->GetCapsuleComponent();FullHeight=Cap->GetScaledCapsuleHalfHeight();CompactHeight=Cap->GetScaledCapsuleRadius()+2;

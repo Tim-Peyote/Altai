@@ -1,4 +1,5 @@
 #include "AltaiDeveloperPanel.h"
+#include "AltaiBodyDynamics.h"
 #include "AltaiLabController.h"
 #include "AltaiWeather.h"
 #include "AltaiHands.h"
@@ -58,6 +59,17 @@ TSharedRef<SWidget> UAltaiDeveloperPanel::Character()
  if(S){V->AddSlot().AutoHeight()[Section(TEXT("ПОВЕРХНОСТИ И СЛЕДЫ"))];V->AddSlot().AutoHeight()[Toggle(TEXT("Спотыкаться о препятствия"),[S]{return S->EnableStumble;},[S](bool B){S->EnableStumble=B;})];
  V->AddSlot().AutoHeight()[Row(TEXT("Время жизни следа, с"),SNew(SSpinBox<float>).Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).MinValue(5).MaxValue(300).Delta(5).Value_Lambda([S]{return S->FootprintLifetime;}).OnValueChanged_Lambda([S](float F){S->FootprintLifetime=F;}))];
  V->AddSlot().AutoHeight().Padding(0,8)[Button(TEXT("Очистить следы и круги на воде"),[S]{S->ClearFootprints();})];}
+ if(auto* B=Lab->BodyDynamics.Get()){
+ V->AddSlot().AutoHeight()[Section(TEXT("РАВНОВЕСИЕ И ПАДЕНИЯ"))];
+ V->AddSlot().AutoHeight()[Toggle(TEXT("Физические реакции тела"),[B]{return B->Enabled;},[B](bool On){B->Enabled=On;})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Состояние тела"),[B]{const TCHAR* States[]={TEXT("Равновесие"),TEXT("Споткнулся"),TEXT("Падает"),TEXT("Лежит"),TEXT("Встаёт")};return FString(States[int(B->State)]);})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Падения / вставания"),[B]{return FString::Printf(TEXT("%d / %d"),B->Falls,B->Recoveries);})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Опоры при вставании"),[B]{return FString::Printf(TEXT("%d · %s"),B->RecoverySupportCount,B->RecoveryBlocked?TEXT("ожидание безопасной опоры"):TEXT("свободно"));})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Удар / физическая масса"),[B]{return FString::Printf(TEXT("%.1f м/с · %.0f кг"),B->LastImpactSpeed/100,B->PhysicalMass);})];
+ V->AddSlot().AutoHeight()[Button(TEXT("Проверить спотыкание"),[B]{B->TestStumble();})];
+ V->AddSlot().AutoHeight().Padding(0,6)[Button(TEXT("Проверить падение от толчка"),[B]{B->TestFall();})];
+ V->AddSlot().AutoHeight()[Label(TEXT("Лёгкое препятствие — потеря шага. Сильный удар или падение с высоты — физическое тело и постепенное вставание. Для наблюдения закройте панель."),13,Muted)];
+ }
  V->AddSlot().AutoHeight()[Section(TEXT("УПРАВЛЕНИЕ В ПОЛИГОНЕ"))];
  V->AddSlot().AutoHeight()[Label(TEXT("V — сменить вид · Ctrl — присесть\nF — взять / отпустить предмет\nЛКМ + мышь — двигать рукой; отпускание — бросок по инерции\nПКМ удерживать / отпустить — замах / бросок\nR + мышь — наклонять кисть в пределах хвата\nКолесо — ближе / дальше; с R — поворачивать предплечье\nT — одна / две руки (с учётом массы)\nЛКМ + движение мыши — тянуть ручку мебели\nE — начать лазание / выйти на уступ\nC — свеситься с края / отпустить скалу · Space — отпрыгнуть\nПКМ — выбрать конечность · ЛКМ — поставить опору\nQ — освободить выбранную конечность"),14,Muted)];
  return V;
