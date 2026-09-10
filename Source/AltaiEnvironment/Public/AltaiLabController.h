@@ -1,15 +1,18 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
+#include "AltaiScreens.h"
 #include "GameFramework/HUD.h"
 #include "AltaiLabController.generated.h"
 
 /** Opt-in controller on the sandbox map only. Campaign controller stays independent. */
 UCLASS()
-class ALTAIENVIRONMENT_API AAltaiLabController : public APlayerController
+class ALTAIENVIRONMENT_API AAltaiLabController : public AAltaiPlayerController
 {
  GENERATED_BODY()
 public:
+ AAltaiLabController();
+ virtual void ShowScreen(EAltaiScreenKind Kind) override;
+ static const TCHAR* DeveloperShortcut();
  virtual void BeginPlay() override;
  virtual void SetupInputComponent() override;
  virtual void Tick(float DeltaSeconds) override;

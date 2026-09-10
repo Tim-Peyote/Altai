@@ -132,6 +132,7 @@ FReply UAltaiScreen::NativeOnKeyDown(const FGeometry& G,const FKeyEvent& E)
 void AAltaiPlayerController::BeginPlay()
 {
  Super::BeginPlay();
+ if(!AutoInitializeScreens)return;
  GetWorldTimerManager().SetTimerForNextTick([this]()
  {
   auto* S=UAltaiSession::Find(this);

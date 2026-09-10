@@ -21,6 +21,42 @@
 #include "Kismet/GameplayStatics.h"
 #include "InputCoreTypes.h"
 
+AAltaiLabController::AAltaiLabController()
+{
+ AutoInitializeScreens=false;
+ InventoryClass=LoadClass<UAltaiScreen>(nullptr,TEXT("/Game/Altai/UI/WBP_FieldInventory.WBP_FieldInventory_C"));
+ PauseClass=LoadClass<UAltaiScreen>(nullptr,TEXT("/Game/Altai/UI/WBP_Pause.WBP_Pause_C"));
+ ConfirmExitClass=LoadClass<UAltaiScreen>(nullptr,TEXT("/Game/Altai/UI/WBP_ConfirmExit.WBP_ConfirmExit_C"));
+}
+const TCHAR* AAltaiLabController::DeveloperShortcut()
+{
+#if PLATFORM_MAC
+ return TEXT("⌘D");
+#else
+ return TEXT("Ctrl+D");
+#endif
+}
+void AAltaiLabController::ShowScreen(EAltaiScreenKind Kind)
+{
+ if(DeveloperPanel)return;
+ const bool Opening=CurrentScreen==EAltaiScreenKind::None && Kind!=EAltaiScreenKind::None;
+ const bool Closing=CurrentScreen!=EAltaiScreenKind::None && Kind==EAltaiScreenKind::None;
+ if(Opening){
+  PreviouslyPaused=UGameplayStatics::IsGamePaused(this);
+  MouseGrab=false;if(Hands)Hands->CancelManipulation();
+  if(GetPawn())GetPawn()->Tags.AddUnique(TEXT("AltaiDeveloperPanelOpen"));
+  if(WallClimbing){PreviousWallInput=WallClimbing->InputFromPlayer;WallClimbing->InputFromPlayer=false;}
+  SetIgnoreMoveInput(true);SetIgnoreLookInput(true);FlushPressedKeys();
+ }
+ Super::ShowScreen(Kind);
+ UGameplayStatics::SetGamePaused(this,Kind!=EAltaiScreenKind::None || PreviouslyPaused);
+ if(Closing){
+  if(GetPawn())GetPawn()->Tags.Remove(TEXT("AltaiDeveloperPanelOpen"));
+  if(WallClimbing)WallClimbing->InputFromPlayer=PreviousWallInput;
+  SetIgnoreMoveInput(false);SetIgnoreLookInput(false);FlushPressedKeys();
+ }
+}
+
 void AAltaiLabController::BeginPlay()
 {
  Super::BeginPlay();
@@ -101,6 +137,7 @@ void AAltaiLabController::Tick(float Dt)
 void AAltaiLabController::ToggleDeveloperPanel()
 {
  if(DeveloperPanel){CloseDeveloperPanel();return;}
+ if(CurrentScreen!=EAltaiScreenKind::None)return;
  MouseGrab=false;if(Hands)Hands->CancelManipulation();
  PreviouslyPaused=UGameplayStatics::IsGamePaused(this);
  if(auto* C=Cast<ACharacter>(GetPawn())){C->Tags.AddUnique(TEXT("AltaiDeveloperPanelOpen"));C->GetCharacterMovement()->StopMovementImmediately();if(!Hands || !Hands->Held)C->UnCrouch();}
@@ -129,7 +166,7 @@ void AAltaiLabHUD::DrawHUD()
  Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC || !PC->ShowLabHUD || PC->DeveloperPanel)return;
  const FLinearColor HUDAccent(.75,.67,.46),White(.8,.85,.82);
  DrawRect(HUDAccent,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
- DrawText(TEXT("Ctrl+D  ·  Панель разработчика"),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
+ DrawText(FString::Printf(TEXT("%s · Панель разработчика    I / Tab · Инвентарь"),AAltaiLabController::DeveloperShortcut()),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
  FString ActionHint=PC->Hands?PC->Hands->Hint:FString();
  if(PC->Traversal && PC->Traversal->Climbing)ActionHint=PC->Traversal->Hint;
  else if(PC->WallClimbing && PC->WallClimbing->Attached){

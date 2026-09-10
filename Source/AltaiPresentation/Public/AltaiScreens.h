@@ -116,7 +116,7 @@ public:
  virtual void BeginPlay() override;
  virtual void SetupInputComponent() override;
  UFUNCTION(BlueprintCallable, Category="Screens")
- void ShowScreen(EAltaiScreenKind Kind);
+ virtual void ShowScreen(EAltaiScreenKind Kind);
  UFUNCTION(BlueprintCallable, Category="Screens")
  void GoBack();
  UFUNCTION(BlueprintCallable, Category="Screens")
@@ -124,4 +124,6 @@ public:
  UFUNCTION(BlueprintCallable, Category="Screens")
  void TogglePause();
  UFUNCTION() void ToggleMap();
+protected:
+ bool AutoInitializeScreens=true;
 };

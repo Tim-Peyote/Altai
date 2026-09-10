@@ -114,7 +114,7 @@ TSharedRef<SWidget> UAltaiDeveloperPanel::RebuildWidget()
  +SOverlay::Slot().HAlign(HAlign_Right).Padding(20)[SNew(SBox).WidthOverride(660)[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(Ink).Padding(22)
  [SNew(SVerticalBox)+SVerticalBox::Slot().AutoHeight()[SNew(SHorizontalBox)+SHorizontalBox::Slot().FillWidth(1)[Label(TEXT("АЛТАЙ / ПОЛИГОН"),12,Gold)]+SHorizontalBox::Slot().AutoWidth()[Button(TEXT("Закрыть · Esc"),[this]{if(Lab.IsValid())Lab->CloseDeveloperPanel();})]]
  +SVerticalBox::Slot().AutoHeight().Padding(0,8)[Label(TEXT("Панель разработчика"),25)]
- +SVerticalBox::Slot().AutoHeight().Padding(0,0,0,14)[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).ColorAndOpacity(Muted).Text_Lambda([this]{return FText::FromString(FString::Printf(TEXT("Ctrl+D   ·   %.0f FPS   ·   %.1f мс"),Lab->FrameSeconds>0?1.f/Lab->FrameSeconds:0,Lab->FrameSeconds*1000));})]
+ +SVerticalBox::Slot().AutoHeight().Padding(0,0,0,14)[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).ColorAndOpacity(Muted).Text_Lambda([this]{return FText::FromString(FString::Printf(TEXT("%s   ·   %.0f FPS   ·   %.1f мс"),AAltaiLabController::DeveloperShortcut(),Lab->FrameSeconds>0?1.f/Lab->FrameSeconds:0,Lab->FrameSeconds*1000));})]
  +SVerticalBox::Slot().AutoHeight().Padding(0,0,0,14)[Tabs]
  +SVerticalBox::Slot().FillHeight(1)[Pages]
  +SVerticalBox::Slot().AutoHeight().Padding(0,14,0,0)[Toggle(TEXT("Приостановить симуляцию"),[this]{return UGameplayStatics::IsGamePaused(Lab.Get());},[this](bool B){UGameplayStatics::SetGamePaused(Lab.Get(),B);})]
