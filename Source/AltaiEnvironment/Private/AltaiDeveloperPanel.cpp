@@ -1,4 +1,5 @@
 #include "AltaiDeveloperPanel.h"
+#include "AltaiSwimming.h"
 #include "AltaiBodyDynamics.h"
 #include "AltaiLabController.h"
 #include "AltaiWeather.h"
@@ -51,6 +52,12 @@ TSharedRef<SWidget> UAltaiDeveloperPanel::Character()
 {
  auto* C=Cast<AAltaiCharacter>(Lab->GetPawn());auto* H=Lab->Hands.Get();auto* W=Lab->WallClimbing.Get();auto* S=Lab->SurfaceResponse.Get();auto V=SNew(SVerticalBox);
  V->AddSlot().AutoHeight()[Section(TEXT("ПЕРСОНАЖ"))];
+ if(auto* Swim=Lab->Swimming.Get()){
+ V->AddSlot().AutoHeight()[Stat(TEXT("Вода / глубина"),[Swim]{return FString::Printf(TEXT("%.0f см · силы %.0f%% · воздух %.0f%%"),Swim->Depth,Swim->Stamina*100,Swim->Oxygen*100);})];
+ V->AddSlot().AutoHeight()[Stat(TEXT("Удушье / состояние"),[Swim]{return Swim->Dead?FString(TEXT("Утонул")):FString::Printf(TEXT("Запас после потери воздуха: %.0f%%"),Swim->DrowningHealth*100);})];
+ V->AddSlot().AutoHeight()[Button(TEXT("Вернуться на берег · восстановиться"),[this,Swim]{Swim->ResetAtShore();Lab->CloseDeveloperPanel();})];
+ V->AddSlot().AutoHeight()[Button(TEXT("Проверить нехватку воздуха · 5%"),[this,Swim]{Swim->SetTestOxygen(.05f);Lab->CloseDeveloperPanel();})];
+ }
  if(C){V->AddSlot().AutoHeight()[Row(TEXT("Камера"),Choice([C]{return C->FirstPerson?FString(TEXT("Первое лицо")):FString(TEXT("Третье лицо"));},{TEXT("Первое лицо"),TEXT("Третье лицо")},[C](int I){C->SetFirstPerson(I==0);}))];
  V->AddSlot().AutoHeight()[Row(TEXT("Масса тела, кг"),SNew(SSpinBox<float>).Font(FCoreStyle::GetDefaultFontStyle("Regular",14)).MinValue(40).MaxValue(160).Delta(5).Value_Lambda([C]{return C->GetCharacterMovement()->Mass;}).OnValueChanged_Lambda([C](float F){C->GetCharacterMovement()->Mass=F;}))];}
  V->AddSlot().AutoHeight()[Label(TEXT("Масса влияет на нагрузку при лазании и переноске. Это настройка текущего теста."),12,Muted)];

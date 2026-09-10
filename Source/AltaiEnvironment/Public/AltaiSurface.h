@@ -43,6 +43,8 @@ public:
  virtual void BeginPlay() override;
  virtual void EndPlay(const EEndPlayReason::Type Reason) override;
  virtual void TickComponent(float DeltaTime,ELevelTick TickType,FActorComponentTickFunction* Function) override;
+ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement",meta=(ClampMin="300",ClampMax="2500")) float GroundAcceleration=1200;
+ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement",meta=(ClampMin="300",ClampMax="2500")) float GroundBraking=1000;
  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Surface") float StepDistance=65;
  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Surface") int32 MaxFootprints=96;
  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Surface") float FootprintLifetime=60;
@@ -64,6 +66,8 @@ private:
  TWeakObjectPtr<class AAltaiWeatherRig> Weather;
  FVector LastPosition=FVector::ZeroVector;
  float BaseSpeed=500,BaseAcceleration=2048,BaseBraking=2048,BaseBrakingFriction=2;
+ float BaseGroundFriction=8,BaseBrakeDrag=0;
+ bool BaseSeparateBraking=false;
  float DistanceSinceStep=0;
  float StumbleTimer=0;
  float StumbleCooldown=0;

@@ -24,6 +24,7 @@ public:
  UPROPERTY(BlueprintReadWrite) bool ShowDiagnostics=false;
  UPROPERTY(BlueprintReadOnly) float FrameSeconds=.016f;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiBodyDynamics> BodyDynamics;
+ UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiSwimming> Swimming;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiSurfaceResponse> SurfaceResponse;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class AAltaiWeatherRig> Weather;
  UPROPERTY(BlueprintReadOnly) TObjectPtr<class UAltaiTraversal> Traversal;

@@ -1,5 +1,6 @@
 #include "AltaiCharacter.h"
 #include "AltaiSkeletalMesh.h"
+#include "AltaiWaterMovement.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "InputCoreTypes.h"
@@ -12,7 +13,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 AAltaiCharacter::AAltaiCharacter(const FObjectInitializer& ObjectInitializer)
- :Super(ObjectInitializer.SetDefaultSubobjectClass<UAltaiSkeletalMesh>(ACharacter::MeshComponentName))
+ :Super(ObjectInitializer.SetDefaultSubobjectClass<UAltaiSkeletalMesh>(ACharacter::MeshComponentName).SetDefaultSubobjectClass<UAltaiWaterMovement>(ACharacter::CharacterMovementComponentName))
 {
  PrimaryActorTick.bCanEverTick=true;
  GetCapsuleComponent()->InitCapsuleSize(42,96);
@@ -44,13 +45,15 @@ void AAltaiCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 }
 void AAltaiCharacter::Move(const FInputActionValue& Value)
 {
+ if(ActorHasTag(TEXT("AltaiDead")))return;
  const FVector2D V=Value.Get<FVector2D>();
- const FRotator R(0,GetControlRotation().Yaw,0);
+ const FRotator R(ActorHasTag(TEXT("AltaiDiving"))?GetControlRotation().Pitch:0,GetControlRotation().Yaw,0);
  AddMovementInput(FRotationMatrix(R).GetUnitAxis(EAxis::X),V.Y);
  AddMovementInput(FRotationMatrix(R).GetUnitAxis(EAxis::Y),V.X);
 }
 void AAltaiCharacter::Look(const FInputActionValue& Value)
 {
+ if(ActorHasTag(TEXT("AltaiDead")))return;
  const FVector2D V=Value.Get<FVector2D>();AddControllerYawInput(V.X);AddControllerPitchInput(V.Y);
 }
 
@@ -77,7 +80,7 @@ void AAltaiCharacter::Tick(float Dt)
   EyeOffset=FVector(Neck.X,Neck.Y,FMath::Clamp(float(Neck.Z+14.f),10.f,90.f))+GetActorForwardVector()*12.f;
  }
  const bool Unbalanced=ActorHasTag(TEXT("AltaiBodyUnbalanced"));
- if(Unbalanced && GetMesh()->DoesSocketExist(TEXT("neck_01"))){
+ if((Unbalanced || ActorHasTag(TEXT("AltaiSwimming"))) && GetMesh()->DoesSocketExist(TEXT("neck_01"))){
   const FQuat Neck=GetMesh()->GetSocketQuaternion(TEXT("neck_01"));
   EyeOffset=GetMesh()->GetSocketLocation(TEXT("neck_01"))-GetActorLocation()+Neck.GetAxisX()*12.f+Neck.GetAxisY()*8.f;
  }

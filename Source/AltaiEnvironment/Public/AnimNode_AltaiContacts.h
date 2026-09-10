@@ -19,6 +19,12 @@ struct ALTAIENVIRONMENT_API FAnimNode_AltaiContacts : public FAnimNode_SkeletalC
  virtual bool IsValidToEvaluate(const USkeleton*,const FBoneContainer&) override{return true;}
  virtual void EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContext& Output,TArray<FBoneTransform>& Out) override;
 private:
+ UPROPERTY() TObjectPtr<class UAnimSequence> SwimMotion;
+ UPROPERTY() TObjectPtr<class UAnimSequence> EasySwimMotion;
+ UPROPERTY() TObjectPtr<class UAnimSequence> TreadSwimMotion;
+ UPROPERTY() TObjectPtr<class UAnimSequence> DrownSwimMotion;
+ float DrownProgress=0;
+ float SwimTravel=0,SwimBlend=0,SwimPhase=0,SwimFatigue=0,WadeBlend=0,SwimPitch=0;
  FPoseSnapshot BodySnapshot;
  FVector RecoveryOffset=FVector::ZeroVector,RecoveryGoals[4],RecoveryNormals[4],RecoveryEndUp[4];
  FQuat RecoveryTilt=FQuat::Identity;

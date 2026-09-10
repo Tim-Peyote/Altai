@@ -14,6 +14,7 @@ public:
  UFUNCTION(BlueprintCallable, Category="Altai|Editor") static void SetPhysicsTestMode(bool Enabled);
  UFUNCTION(BlueprintCallable, Category="Altai|Editor") static bool CreateContactAnimation(class USkeleton* Skeleton);
  UFUNCTION(BlueprintCallable, Category="Altai|Editor") static class ALandscape* ImportLabLandscape(const FString& HeightFile, class UMaterialInterface* Material);
+ UFUNCTION(BlueprintCallable, Category="Altai|Editor") static bool SculptSwimmingPond(class ALandscape* Landscape);
  UFUNCTION(BlueprintCallable, Category="Altai|Editor") static bool CreateHeadingFont();
  // Authoring only. Existing assets are never overwritten.
  UFUNCTION(BlueprintCallable, Category="Altai|Editor") static void CreateUIAssets();

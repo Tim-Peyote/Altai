@@ -1,5 +1,6 @@
 #include "AltaiLabController.h"
 #include "AltaiBodyDynamics.h"
+#include "AltaiSwimming.h"
 #include "AltaiDeveloperPanel.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Misc/App.h"
@@ -77,6 +78,7 @@ void AAltaiLabController::BeginPlay()
   Hands=NewObject<UAltaiHands>(C,TEXT("LabHands"));Hands->RegisterComponent();
   WallClimbing=NewObject<UAltaiWallClimbing>(C,TEXT("LabWallClimbing"));WallClimbing->RegisterComponent();
   Traversal=NewObject<UAltaiTraversal>(C,TEXT("LabTraversal"));Traversal->RegisterComponent();
+  Swimming=NewObject<UAltaiSwimming>(C,TEXT("LabSwimming"));Swimming->RegisterComponent();
   BodyDynamics=NewObject<UAltaiBodyDynamics>(C,TEXT("LabBodyDynamics"));BodyDynamics->RegisterComponent();
  }
 }
@@ -108,7 +110,7 @@ void AAltaiLabController::PlaceHand(){
  MouseGrab=true;if(!Hands->ConstrainedGrip)Hands->BeginHandMotion();
 }
 void AAltaiLabController::ReleaseHand(){if(Hands && MouseGrab)Hands->Release();MouseGrab=false;}
-void AAltaiLabController::StartCrouch(){if(BodyDynamics && BodyDynamics->OwnsBody())return;if((WallClimbing && WallClimbing->Attached)||(Traversal && Traversal->Climbing))return;if(auto* C=Cast<ACharacter>(GetPawn()))C->Crouch();}
+void AAltaiLabController::StartCrouch(){if(Swimming && Swimming->Swimming())return;if(BodyDynamics && BodyDynamics->OwnsBody())return;if((WallClimbing && WallClimbing->Attached)||(Traversal && Traversal->Climbing))return;if(auto* C=Cast<ACharacter>(GetPawn()))C->Crouch();}
 void AAltaiLabController::StopCrouch(){if(auto* C=Cast<ACharacter>(GetPawn()))C->UnCrouch();}
 void AAltaiLabController::NextLimb(){if(WallClimbing && WallClimbing->Attached){WallClimbing->SelectNextLimb();return;}if(Hands)Hands->BeginChargeThrow();}
 void AAltaiLabController::ReleaseThrow(){if(Hands && Hands->ReleaseChargedThrow())MouseGrab=false;}
@@ -118,8 +120,8 @@ void AAltaiLabController::ToggleHeldGrip(){if(Hands)Hands->SetTwoHandGrip(!Hands
 void AAltaiLabController::HoldCloser(){if(Hands)Hands->AdjustHoldDistance(-4.f);}
 void AAltaiLabController::HoldFarther(){if(Hands)Hands->AdjustHoldDistance(4.f);}
 void AAltaiLabController::Grab(){MouseGrab=false;if(Hands)Hands->ToggleGrab();}
-void AAltaiLabController::Climb(){if(auto* C=Cast<ACharacter>(GetPawn());C && C->bIsCrouched){if(Hands)Hands->Hint=TEXT("Stand up before climbing");return;}if(Hands && Hands->Held){Hands->Hint=TEXT("Put the object down before climbing");return;}if(WallClimbing && WallClimbing->Attached){if(Traversal)Traversal->TryClimbFromWall();return;}if(WallClimbing && WallClimbing->AttachWall())return;if(Traversal)Traversal->TryClimb();}
-void AAltaiLabController::ReleaseLedge(){if(WallClimbing && WallClimbing->Attached){WallClimbing->ReleaseWall();return;}if(Traversal){if(Traversal->Climbing)Traversal->CancelClimb();else Traversal->TryDescend();}}
+void AAltaiLabController::Climb(){if(Swimming && (Swimming->Swimming() || Swimming->Dead))return;if(auto* C=Cast<ACharacter>(GetPawn());C && C->bIsCrouched){if(Hands)Hands->Hint=TEXT("Stand up before climbing");return;}if(Hands && Hands->Held){Hands->Hint=TEXT("Put the object down before climbing");return;}if(WallClimbing && WallClimbing->Attached){if(Traversal)Traversal->TryClimbFromWall();return;}if(WallClimbing && WallClimbing->AttachWall())return;if(Traversal)Traversal->TryClimb();}
+void AAltaiLabController::ReleaseLedge(){if(Swimming && Swimming->Swimming())return;if(WallClimbing && WallClimbing->Attached){WallClimbing->ReleaseWall();return;}if(Traversal){if(Traversal->Climbing)Traversal->CancelClimb();else Traversal->TryDescend();}}
 #define LAB_PRESET(N) void AAltaiLabController::Preset##N(){if(Weather){Weather->AutomaticWeather=false;Weather->SelectPreset(N);}}
 LAB_PRESET(0) LAB_PRESET(1) LAB_PRESET(2) LAB_PRESET(3) LAB_PRESET(4) LAB_PRESET(5) LAB_PRESET(6)
 #undef LAB_PRESET
@@ -163,7 +165,15 @@ void AAltaiLabController::EndPlay(const EEndPlayReason::Type R){CloseDeveloperPa
 void AAltaiLabController::ResetLab(){CloseDeveloperPanel();Reset();}
 void AAltaiLabHUD::DrawHUD()
 {
- Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC || !PC->ShowLabHUD || PC->DeveloperPanel)return;
+ Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC)return;
+ // Draw after world post-processing, before Slate panels. The blackout must survive
+ // graphics settings and hiding telemetry, while leaving recovery controls readable.
+ if(PC->Swimming && PC->Swimming->Blackout>0)DrawRect(FLinearColor(0,0,0,PC->Swimming->Blackout),0,0,Canvas->ClipX,Canvas->ClipY);
+ if(PC->Swimming && PC->Swimming->Dead && !PC->DeveloperPanel){
+  DrawText(TEXT("Вы утонули"),FLinearColor(.8,.85,.82),Canvas->ClipX*.5f-70,Canvas->ClipY*.5f,GEngine->GetMediumFont());
+  DrawText(FString::Printf(TEXT("%s · Панель разработчика → Вернуться на берег"),AAltaiLabController::DeveloperShortcut()),FLinearColor(.8,.85,.82),Canvas->ClipX*.5f-210,Canvas->ClipY*.5f+35,GEngine->GetSmallFont(),1.1f);return;
+ }
+ if(!PC->ShowLabHUD || PC->DeveloperPanel)return;
  const FLinearColor HUDAccent(.75,.67,.46),White(.8,.85,.82);
  DrawRect(HUDAccent,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
  DrawText(FString::Printf(TEXT("%s · Панель разработчика    I / Tab · Инвентарь"),AAltaiLabController::DeveloperShortcut()),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
@@ -173,6 +183,7 @@ void AAltaiLabHUD::DrawHUD()
   auto* Wall=PC->WallClimbing.Get();const TCHAR* Names[]={TEXT("Left hand"),TEXT("Right hand"),TEXT("Left foot"),TEXT("Right foot")};
   ActionHint=FString::Printf(TEXT("%s: %s | RMB select / LMB reach / Q rest | S down / E top"),Names[FMath::Clamp(Wall->SelectedLimb,0,3)],Wall->MovingLimb==Wall->SelectedLimb?TEXT("reaching"):Wall->ContactActive[Wall->SelectedLimb]?TEXT("support"):TEXT("free"));
  }else if(PC->Traversal && PC->Traversal->CanClimb && (!PC->Hands || !PC->Hands->Held))ActionHint=PC->Traversal->Hint;
+ if(PC->Swimming && PC->Swimming->State!=EAltaiSwimState::Dry)ActionHint=FString::Printf(TEXT("%s | Силы %.0f%% · Воздух %.0f%%"),*PC->Swimming->Hint,PC->Swimming->Stamina*100,PC->Swimming->Oxygen*100);
  if(!ActionHint.IsEmpty())DrawText(ActionHint,White,Canvas->ClipX*.5f-220,Canvas->ClipY*.5f+40,GEngine->GetSmallFont(),1.1f);
  if(PC->Hands && PC->Hands->ChargingThrow){DrawRect(FLinearColor(.04,.05,.05,.8),Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140,4);DrawRect(HUDAccent,Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140*PC->Hands->ThrowCharge,4);}
  if(PC->ShowDiagnostics){

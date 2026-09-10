@@ -1,5 +1,6 @@
 #include "AnimNode_AltaiContacts.h"
 #include "AltaiBodyDynamics.h"
+#include "AltaiSwimming.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/AttributeTypes.h"
 #include "AltaiHands.h"
@@ -117,6 +118,13 @@ void FAnimNode_AltaiContacts::PreUpdate(const UAnimInstance* Instance)
 {
  Holding=false;OrientHands=false;RecoveringBody=false;SimulatingBody=false;StumbleAlpha=0;
  auto* Mesh=Instance->GetSkelMeshComponent();auto* Owner=Mesh?Mesh->GetOwner():nullptr;
+ SwimBlend=WadeBlend=DrownProgress=0;
+ if(auto* Swim=Owner?Owner->FindComponentByClass<UAltaiSwimming>():nullptr){
+  SwimBlend=Swim->SwimAlpha;WadeBlend=Swim->WadeAlpha;SwimPhase=Swim->Phase;SwimFatigue=Swim->Fatigue;SwimTravel=Swim->TravelBlend;TreadSwimMotion=Swim->TreadMotion;
+  DrownSwimMotion=Swim->DrownMotion;DrownProgress=Swim->Dead?Swim->DeathProgress:0;
+  SwimMotion=Swim->Breaststroke;EasySwimMotion=Swim->EasyStroke;
+  const auto* C=Cast<ACharacter>(Owner);const float DesiredPitch=Swim->State==EAltaiSwimState::Diving && C?FMath::Clamp(FRotator::NormalizeAxis(C->GetControlRotation().Pitch),-55.f,55.f):0.f;SwimPitch=FMath::FInterpTo(SwimPitch,DesiredPitch,Owner->GetWorld()->GetDeltaSeconds(),3.f);
+ }
  if(auto* Body=Owner?Owner->FindComponentByClass<UAltaiBodyDynamics>():nullptr;Body && Body->OwnsBody()){
   RecoveringBody=Body->State==EAltaiBodyState::GettingUp;SimulatingBody=!RecoveringBody;
   BodyAnimation=Body->RecoveryMotion();BodySnapshot=Body->RecoverySnapshot;BodyRecovery=Body->RecoveryProgress;BodyAcquire=Body->RecoveryAcquire;
@@ -220,6 +228,53 @@ void FAnimNode_AltaiContacts::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
 {
  if(SimulatingBody)return;
  const auto& Bones=Output.Pose.GetPose().GetBoneContainer();
+ if(SwimBlend>.001f && SwimMotion && !RecoveringBody){
+  FCompactPose Tread;Tread.SetBoneContainer(&Bones);
+  FCompactPose Pose,Easy,Drown;Pose.SetBoneContainer(&Bones);Easy.SetBoneContainer(&Bones);Drown.SetBoneContainer(&Bones);
+  FBlendedCurve Curve,EasyCurve;Curve.InitFrom(Bones);EasyCurve.InitFrom(Bones);
+  UE::Anim::FStackAttributeContainer Attr,EasyAttr;FAnimationPoseData Data(Pose,Curve,Attr),EasyData(Easy,EasyCurve,EasyAttr);
+  SwimMotion->GetAnimationPose(Data,FAnimExtractContext(double(SwimPhase*SwimMotion->GetPlayLength()),false));
+  if(EasySwimMotion)EasySwimMotion->GetAnimationPose(EasyData,FAnimExtractContext(double(SwimPhase*EasySwimMotion->GetPlayLength()),false));
+  FBlendedCurve TreadCurve;TreadCurve.InitFrom(Bones);UE::Anim::FStackAttributeContainer TreadAttr;FAnimationPoseData TreadData(Tread,TreadCurve,TreadAttr);
+  if(TreadSwimMotion)TreadSwimMotion->GetAnimationPose(TreadData,FAnimExtractContext(double(SwimPhase*TreadSwimMotion->GetPlayLength()),false));
+  FBlendedCurve DrownCurve;DrownCurve.InitFrom(Bones);UE::Anim::FStackAttributeContainer DrownAttr;FAnimationPoseData DrownData(Drown,DrownCurve,DrownAttr);
+  if(DrownProgress>0 && DrownSwimMotion)DrownSwimMotion->GetAnimationPose(DrownData,FAnimExtractContext(double(FMath::Min(.999f,DrownProgress)*DrownSwimMotion->GetPlayLength()),false));
+  TArray<FTransform> World;
+  for(int32 I=0;I<Bones.GetCompactPoseNumBones();++I){
+   const FCompactPoseBoneIndex Index(I),Parent=Bones.GetParentBoneIndex(Index);FTransform Local=Pose[Index];
+   if(EasySwimMotion)Local.Blend(Local,Easy[Index],SwimFatigue);
+   if(TreadSwimMotion)Local.Blend(Tread[Index],Local,SwimTravel);
+   if(DrownProgress>0 && DrownSwimMotion)Local.Blend(Local,Drown[Index],FMath::SmoothStep(0.f,.6f,DrownProgress));
+   Local.Blend(Output.Pose.GetLocalSpaceTransform(Index),Local,SwimBlend);
+   // A safe clip can still inherit an over-flexed knee from the outgoing
+   // locomotion pose. Enforce the same calibrated hinge bounds after blending.
+   for(int32 J=0;J<4;++J)if(I==HingeBones[J] && ClimbReferenceLocal.IsValidIndex(I)){
+    const FQuat Delta=Local.GetRotation()*ClimbReferenceLocal[I].GetRotation().Inverse();
+    const FVector Axis=HingeAxes[J]==0?FVector::ForwardVector:HingeAxes[J]==1?FVector::RightVector:FVector::UpVector;
+    FQuat Swing,Twist;Delta.ToSwingTwist(Axis,Swing,Twist);
+    const FRotator Angles=Twist.Rotator();
+    const float Angle=HingeAxes[J]==0?Angles.Roll:HingeAxes[J]==1?Angles.Pitch:Angles.Yaw;
+    const float Limited=FMath::Clamp(Angle,HingeMin[J]+.1f,HingeMax[J]-.1f);
+    if(!FMath::IsNearlyEqual(Angle,Limited))Local.SetRotation((Swing*FQuat(Axis,FMath::DegreesToRadians(Limited))*ClimbReferenceLocal[I].GetRotation()).GetNormalized());
+   }
+   World.Add(Parent==INDEX_NONE?Local:Local*World[Parent.GetInt()]);
+  }
+  const FVector Pivot=World[Pelvis.GetCompactPoseIndex(Bones).GetInt()].GetLocation();
+  const FQuat Pitch(FVector::ForwardVector,FMath::DegreesToRadians(SwimPitch*SwimBlend));
+  for(int32 I=0;I<World.Num();++I){auto T=World[I];T.SetLocation(Pivot+Pitch.RotateVector(T.GetLocation()-Pivot));T.SetRotation(Pitch*T.GetRotation());Out.Add(FBoneTransform(FCompactPoseBoneIndex(I),T));}
+  return;
+ }
+ if(WadeBlend>.01f && !Holding && !ClimbingPose && !RecoveringBody){
+  TArray<FTransform> World;
+  for(int32 I=0;I<Bones.GetCompactPoseNumBones();++I){
+   const FCompactPoseBoneIndex Index(I),Parent=Bones.GetParentBoneIndex(Index);FTransform Local=Output.Pose.GetLocalSpaceTransform(Index);
+   const FName Name=Bones.GetReferenceSkeleton().GetBoneName(Bones.MakeMeshPoseIndex(Index).GetInt());
+   if(Name==TEXT("lowerarm_l") || Name==TEXT("lowerarm_r"))Local.SetRotation(Local.GetRotation()*FQuat(FVector::UpVector,FMath::DegreesToRadians(22*WadeBlend)));
+   if(Name==TEXT("spine_01"))Local.SetRotation(Local.GetRotation()*FQuat(FVector::ForwardVector,FMath::DegreesToRadians(-6*WadeBlend)));
+   World.Add(Parent==INDEX_NONE?Local:Local*World[Parent.GetInt()]);Out.Add(FBoneTransform(Index,World.Last()));
+  }
+  return;
+ }
  if(RecoveringBody && BodyAnimation){
   FCompactPose Pose;Pose.SetBoneContainer(&Bones);FBlendedCurve Curve;Curve.InitFrom(Bones);
   UE::Anim::FStackAttributeContainer Attributes;FAnimationPoseData Data(Pose,Curve,Attributes);
@@ -231,6 +286,14 @@ void FAnimNode_AltaiContacts::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
    const int32 SnapshotIndex=BodySnapshot.BoneNames.IndexOfByKey(Bones.GetReferenceSkeleton().GetBoneName(Bones.MakeMeshPoseIndex(Index).GetInt()));
    if(BodySnapshot.bIsValid && BodySnapshot.LocalTransforms.IsValidIndex(SnapshotIndex))Local.Blend(BodySnapshot.LocalTransforms[SnapshotIndex],Local,Acquire);
    Local.Blend(Local,Output.Pose.GetLocalSpaceTransform(Index),Stand);
+   const FName BoneName=Bones.GetReferenceSkeleton().GetBoneName(Bones.MakeMeshPoseIndex(Index).GetInt());
+   if(BoneName==TEXT("hand_l") || BoneName==TEXT("hand_r") || BoneName==TEXT("foot_l") || BoneName==TEXT("foot_r")){
+    // A physical snapshot can carry residual wrist/ankle rotation beyond the
+    // authored envelope. Bound acquisition too, before terrain contact fitting.
+    const FQuat Rest=ClimbReferenceLocal[I].GetRotation();FQuat Delta=Rest.Inverse()*Local.GetRotation();
+    const float Angle=Delta.AngularDistance(FQuat::Identity),Limit=FMath::DegreesToRadians(BoneName.ToString().StartsWith(TEXT("hand"))?70.f:65.f);
+    Local.SetRotation(Rest*FQuat::Slerp(FQuat::Identity,Delta,FMath::Min(1.f,Limit/FMath::Max(Angle,.0001f))));
+   }
    World.Add(Parent==INDEX_NONE?Local:Local*World[Parent.GetInt()]);
   }
   const float TerrainAlpha=Acquire*(1-Stand);
@@ -298,6 +361,11 @@ void FAnimNode_AltaiContacts::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
    const float Angle=Delta.AngularDistance(FQuat::Identity),Limit=FMath::DegreesToRadians(I<2?70.f:50.f);
    Delta=FQuat::Slerp(FQuat::Identity,Delta,FMath::Min(1.f,Limit/FMath::Max(Angle,.0001f)));
    End.SetRotation(FQuat::Slerp(End.GetRotation(),L*EndReference*Delta,Weight));
+   // The lower limb changed frame during IK. A partial blend from the old world
+   // orientation must also be constrained in this new parent frame.
+   const FQuat BlendedDelta=EndReference.Inverse()*L.Inverse()*End.GetRotation();
+   const float BlendedAngle=BlendedDelta.AngularDistance(FQuat::Identity);
+   End.SetRotation(L*EndReference*FQuat::Slerp(FQuat::Identity,BlendedDelta,FMath::Min(1.f,Limit/FMath::Max(BlendedAngle,.0001f))));
    SetBone(A,Upper);SetBone(J,Lower);SetBone(E,End);
   }
   for(int32 I=0;I<World.Num();++I)Out.Emplace(FCompactPoseBoneIndex(I),World[I]);

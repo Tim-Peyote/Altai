@@ -1,5 +1,7 @@
 #include "AltaiSurface.h"
 #include "AltaiBodyDynamics.h"
+#include "AltaiSwimming.h"
+#include "GameFramework/PlayerController.h"
 #include "AltaiHands.h"
 #include "AltaiFootstepFX.h"
 #include "CollisionShape.h"
@@ -42,12 +44,13 @@ void UAltaiSurfaceResponse::BeginPlay()
  Super::BeginPlay();Character=Cast<ACharacter>(GetOwner());
  if(!Character.IsValid()){SetComponentTickEnabled(false);return;}
  auto* Movement=Character->GetCharacterMovement();BaseSpeed=Movement->MaxWalkSpeed;BaseAcceleration=Movement->MaxAcceleration;BaseBraking=Movement->BrakingDecelerationWalking;BaseBrakingFriction=Movement->BrakingFrictionFactor;LastPosition=Character->GetActorLocation();
+ BaseGroundFriction=Movement->GroundFriction;BaseSeparateBraking=Movement->bUseSeparateBrakingFriction;BaseBrakeDrag=Movement->BrakingFriction;
  for(TActorIterator<AAltaiSurfaceZone> It(GetWorld());It;++It)Zones.Add(*It);
  if(TActorIterator<AAltaiWeatherRig> It(GetWorld());It){Weather=*It;}
 }
 void UAltaiSurfaceResponse::EndPlay(const EEndPlayReason::Type Reason)
 {
- if(Character.IsValid()){auto* M=Character->GetCharacterMovement();M->MaxWalkSpeed=BaseSpeed;M->MaxAcceleration=BaseAcceleration;M->BrakingDecelerationWalking=BaseBraking;M->BrakingFrictionFactor=BaseBrakingFriction;}
+ if(Character.IsValid()){auto* M=Character->GetCharacterMovement();M->MaxWalkSpeed=BaseSpeed;M->MaxAcceleration=BaseAcceleration;M->BrakingDecelerationWalking=BaseBraking;M->BrakingFrictionFactor=BaseBrakingFriction;M->GroundFriction=BaseGroundFriction;M->bUseSeparateBrakingFriction=BaseSeparateBraking;M->BrakingFriction=BaseBrakeDrag;}
  ClearFootprints();Super::EndPlay(Reason);
 }
 void UAltaiSurfaceResponse::ClearFootprints(){for(auto Mark:Marks)if(Mark.IsValid())Mark->DestroyComponent();for(auto R:Ripples)if(R.IsValid())R->Destroy();Ripples.Reset();Marks.Reset();DistanceSinceStep=0;WetSteps=0;}
@@ -77,13 +80,18 @@ void UAltaiSurfaceResponse::TickComponent(float Dt,ELevelTick Type,FActorCompone
   FVector End=Feet+Direction*(C->GetCapsuleComponent()->GetScaledCapsuleRadius()+18);End.Z=Start.Z;
   FHitResult Low,High;
   if(GetWorld()->SweepSingleByChannel(Low,Start,End,FQuat::Identity,ECC_Visibility,FCollisionShape::MakeSphere(8),Query) && Low.ImpactNormal.Z<.45f
-   && !GetWorld()->LineTraceSingleByChannel(High,Start+FVector(0,0,70),End+FVector(0,0,70),ECC_Visibility,Query))
+   && !GetWorld()->SweepSingleByChannel(High,Start+FVector(0,0,70),End+FVector(0,0,70),FQuat::Identity,ECC_Visibility,FCollisionShape::MakeSphere(8),Query))
   {StumbleTimer=.45f;StumbleCooldown=1.5f;if(auto* Body=C->FindComponentByClass<UAltaiBodyDynamics>())Body->Trip(Low);else Move->Velocity*=.4f;++StumbleCount;}
  }
  auto* Hands=C->FindComponentByClass<UAltaiHands>();
  const float LoadSpeed=Hands?Hands->CarrySpeedScale:1.f,LoadAcceleration=Hands?Hands->CarryAccelerationScale:1.f;
- Move->MaxAcceleration=BaseAcceleration*LoadAcceleration;Move->BrakingDecelerationWalking=BaseBraking*LoadAcceleration;Move->BrakingFrictionFactor=BaseBrakingFriction*LoadAcceleration;
+ // Separate steering friction from stopping drag: the template's 8*2 friction
+ // erased a running character's momentum in roughly a tenth of a second.
+ Move->MaxAcceleration=FMath::Min(BaseAcceleration,GroundAcceleration)*LoadAcceleration;
+ Move->BrakingDecelerationWalking=GroundBraking*LoadAcceleration;
+ Move->bUseSeparateBrakingFriction=true;Move->BrakingFriction=1.f;Move->BrakingFrictionFactor=1.f;Move->GroundFriction=4.f;
  Desired*=LoadSpeed;
+ if(auto* PC=Cast<APlayerController>(C->GetController());PC && PC->IsInputKeyDown(EKeys::LeftShift))Desired*=1.45f;
  if(StumbleTimer>0)Desired=FMath::Min(Desired,.4f);
  SpeedScale=FMath::FInterpTo(SpeedScale,Desired,Dt,9.f);Move->MaxWalkSpeed=BaseSpeed*SpeedScale;
  if(Move->IsMovingOnGround() && Moved>.3f)

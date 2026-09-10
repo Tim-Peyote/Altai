@@ -32,7 +32,7 @@ void UAltaiBodyDynamics::BeginPlay(){
  C->GetCapsuleComponent()->OnComponentHit.AddDynamic(this,&UAltaiBodyDynamics::CapsuleHit);
 }
 bool UAltaiBodyDynamics::Available() const{
- return Enabled && Character.IsValid() && !GetOwner()->ActorHasTag(TEXT("AltaiWallAttached")) && !GetOwner()->ActorHasTag(TEXT("AltaiMantling"));
+ return Enabled && !GetOwner()->ActorHasTag(TEXT("AltaiSwimming")) && Character.IsValid() && !GetOwner()->ActorHasTag(TEXT("AltaiWallAttached")) && !GetOwner()->ActorHasTag(TEXT("AltaiMantling"));
 }
 void UAltaiBodyDynamics::ConfigureBodies(){
  auto* C=Character.Get();auto* Mesh=C->GetMesh();auto* Asset=Mesh->GetPhysicsAsset();if(!Asset)return;
@@ -157,6 +157,13 @@ void UAltaiBodyDynamics::TestStumble(){if(Character.IsValid())BeginStumble(.65f,
 void UAltaiBodyDynamics::TestFall(){if(Character.IsValid())ApplyBodyImpulse(Character->GetActorRightVector()*Character->GetCharacterMovement()->Mass*230,Character->GetMesh()->GetSocketLocation(TEXT("spine_03"))+FVector(0,0,15));}
 void UAltaiBodyDynamics::CapsuleHit(UPrimitiveComponent*,AActor*,UPrimitiveComponent* Other,FVector Impulse,const FHitResult& Hit){
  if(!Available() || OwnsBody() || !Other)return;
+ const float FeetZ=Character->GetActorLocation().Z-Character->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+ const bool TallBarrier=Other->Bounds.GetBox().Max.Z>FeetZ+90.f;
+ if(!Other->IsSimulatingPhysics() && TallBarrier && Character->GetCharacterMovement()->IsMovingOnGround() && FMath::Abs(Hit.ImpactNormal.Z)<.35f){
+  const float Closing=FMath::Max(0.f,float(-FVector::DotProduct(PreviousVelocity,Hit.ImpactNormal)));
+  if(Closing>250){LastImpactSpeed=Closing;BeginStumble(FMath::Clamp((Closing-200.f)/800.f,.15f,.65f),-Hit.ImpactNormal);}
+  return;
+ }
  if(Other->IsSimulatingPhysics()){
   const FVector Relative=Other->GetPhysicsLinearVelocityAtPoint(Hit.ImpactPoint)-PreviousVelocity;
   const float Closing=FMath::Max(0.f,float(FVector::DotProduct(Relative,Hit.ImpactNormal)));
@@ -169,7 +176,9 @@ bool UAltaiBodyDynamics::TryGetUp(){
  RecoveryRetry=.35f;
  auto* C=Character.Get();auto* Mesh=C->GetMesh();const FVector Hip=Mesh->GetSocketLocation(TEXT("pelvis"));
  FCollisionQueryParams Q(SCENE_QUERY_STAT(AltaiGetUp),false,C);FHitResult Floor;
- if(!GetWorld()->LineTraceSingleByChannel(Floor,Hip+FVector(0,0,25),Hip-FVector(0,0,90),ECC_Visibility,Q) || Floor.ImpactNormal.Z<C->GetCharacterMovement()->GetWalkableFloorZ())return false;
+ if(!GetWorld()->LineTraceSingleByChannel(Floor,Hip+FVector(0,0,25),Hip-FVector(0,0,90),ECC_Visibility,Q) || Floor.ImpactNormal.Z<C->GetCharacterMovement()->GetWalkableFloorZ()){
+  RecoveryBlocked=true;RecoveryTerrainIssue=TEXT("No walkable support below settled pelvis");Hint=RecoveryTerrainIssue;return false;
+ }
  const float Radius=C->GetCapsuleComponent()->GetScaledCapsuleRadius(),Height=C->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
  RecoveryFloor=Floor.ImpactPoint+FVector(0,0,2);
 
@@ -187,7 +196,7 @@ bool UAltaiBodyDynamics::TryGetUp(){
  }
  const float PreferredYaw=FMath::RadiansToDegrees(FMath::Atan2(Cross,Dot));
  FVector Forward;bool Found=false;CacheRecoveryPose();
- for(const float Turn:{0.f,30.f,-30.f,60.f,-60.f,90.f,-90.f}){
+ for(const float Turn:{0.f,30.f,-30.f,60.f,-60.f,90.f,-90.f,120.f,-120.f,150.f,-150.f,180.f}){
   Forward=FRotator(0,PreferredYaw+Turn,0).Vector();
   const FVector InitialOffset=Forward.Rotation().RotateVector(MeshHome.TransformPosition(FirstHip.GetLocation()));
   RecoveryFloor=Floor.ImpactPoint+FVector(0,0,2)-FVector(InitialOffset.X,InitialOffset.Y,0);
@@ -200,7 +209,7 @@ bool UAltaiBodyDynamics::TryGetUp(){
  }
  if(!Found){RecoveryBlocked=true;Hint=TEXT("Waiting for stable supports / clear recovery path: ")+RecoveryTerrainIssue;return false;}
  RecoveryBlocked=false;RecoveryBlockedTime=0;RecoveryContacts.Reset();
- RecoveryAcquire=FMath::Clamp(.45f+(Forward.Rotation().Quaternion()*ClipHip).AngularDistance(PhysicalHip)*.35f,.45f,1.05f);
+ RecoveryAcquire=FMath::Clamp(.45f+(Forward.Rotation().Quaternion()*ClipHip).AngularDistance(PhysicalHip)*.35f,.45f,1.65f);
 
  Muscles->SetStrengthMultiplyer(0);Muscles->SetComponentTickEnabled(false);Muscles->SetSkeletalMeshComponent(nullptr);
  Mesh->SnapshotPose(RecoverySnapshot);

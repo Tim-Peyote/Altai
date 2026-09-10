@@ -51,7 +51,7 @@ void UAltaiHands::EndPlay(const EEndPlayReason::Type R){Release();RestoreRelease
 void UAltaiHands::ToggleGrab(){if(Held)Release();else TryGrab();}
 bool UAltaiHands::TryGrab(bool FurnitureOnly)
 {
- if(GetOwner()->ActorHasTag(TEXT("AltaiBodyUnbalanced")))return false;
+ if(GetOwner()->ActorHasTag(TEXT("AltaiBodyUnbalanced")) || GetOwner()->ActorHasTag(TEXT("AltaiSwimming")))return false;
  if(Held || WallContacts || !Character.IsValid())return false;
  if(auto* Traversal=GetOwner()->FindComponentByClass<UAltaiTraversal>();Traversal && Traversal->Climbing){Hint=TEXT("Finish the mantle before grabbing");return false;}
  auto* C=Character.Get();FVector Eye;FRotator Look;C->GetActorEyesViewPoint(Eye,Look);
