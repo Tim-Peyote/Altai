@@ -12,7 +12,12 @@ for row in data['samples']:
         if c['weight']<.95:continue
         error=math.dist(c['goal'],row['bones'][name]);key=row['case']+':'+name
         contacts[key]=max(contacts.get(key,0),error)
-safe=not anatomy['back_bridge_frames'] and all(j['min'] and abs(j['min'][0])<110 and abs(j['max'][0])<110 for j in anatomy['joints'].values())
+safe=not anatomy['back_bridge_frames'] and all(
+    j['min'] and abs(j['min'][0])<(85 if n.startswith('thigh') else 110)
+    and abs(j['max'][0])<(85 if n.startswith('thigh') else 110)
+    for n,j in anatomy['joints'].items()) and all(
+    angle<(40 if n.startswith('spine') else 75)
+    for n,angle in anatomy['local_rotation_degrees'].items())
 result={'passed':data['passed'] and safe and bool(contacts) and max(contacts.values())<8,
         'integration_passed':data['passed'],'anatomy':anatomy,'max_planted_contact_error_cm':contacts}
 (ROOT/'Saved/recovery_terrain_analysis.json').write_text(json.dumps(result,indent=2))

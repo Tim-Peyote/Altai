@@ -54,6 +54,9 @@ bool UAltaiBodyDynamics::EvaluateRecoveryTerrain(float Time,const FTransform& Me
  Offset=FVector(0,0,Ground.ImpactPoint.Z+2-Base-2*FMath::SmoothStep(60.f,90.f,Height));
  if(FMath::Abs(Offset.Z)>40)return Reject(TEXT("Ground height outside reach"));
  const float Tilt=1-FMath::SmoothStep(40.f,90.f,Height);
+ // Tilting around the pelvis must preserve its distance along the ground normal.
+ // Keeping only the vertical height lowers the trunk into an uphill surface.
+ Offset.Z+=(Height+2)*(1.f/Ground.ImpactNormal.Z-1.f)*Tilt;
  Rotation=FQuat::Slerp(FQuat::Identity,FQuat::FindBetweenNormals(FVector::UpVector,Ground.ImpactNormal),Tilt);
  auto Position=[&](int32 Bone){return Hip+Offset+Rotation.RotateVector(MeshWorld.TransformPosition(Pose[Bone].GetLocation())-Hip);};
  Contacts.SetNum(4);int32 FootSupports=0;

@@ -127,8 +127,8 @@ void AAltaiLabController::ResetLab(){CloseDeveloperPanel();Reset();}
 void AAltaiLabHUD::DrawHUD()
 {
  Super::DrawHUD();auto* PC=Cast<AAltaiLabController>(PlayerOwner);if(!Canvas || !PC || !PC->ShowLabHUD || PC->DeveloperPanel)return;
- const FLinearColor Gold(.75,.67,.46),White(.8,.85,.82);
- DrawRect(Gold,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
+ const FLinearColor HUDAccent(.75,.67,.46),White(.8,.85,.82);
+ DrawRect(HUDAccent,Canvas->ClipX*.5f-1,Canvas->ClipY*.5f-1,2,2);
  DrawText(TEXT("Ctrl+D  ·  Панель разработчика"),White,24,Canvas->ClipY-34,GEngine->GetSmallFont(),1.1f);
  FString ActionHint=PC->Hands?PC->Hands->Hint:FString();
  if(PC->Traversal && PC->Traversal->Climbing)ActionHint=PC->Traversal->Hint;
@@ -137,10 +137,10 @@ void AAltaiLabHUD::DrawHUD()
   ActionHint=FString::Printf(TEXT("%s: %s | RMB select / LMB reach / Q rest | S down / E top"),Names[FMath::Clamp(Wall->SelectedLimb,0,3)],Wall->MovingLimb==Wall->SelectedLimb?TEXT("reaching"):Wall->ContactActive[Wall->SelectedLimb]?TEXT("support"):TEXT("free"));
  }else if(PC->Traversal && PC->Traversal->CanClimb && (!PC->Hands || !PC->Hands->Held))ActionHint=PC->Traversal->Hint;
  if(!ActionHint.IsEmpty())DrawText(ActionHint,White,Canvas->ClipX*.5f-220,Canvas->ClipY*.5f+40,GEngine->GetSmallFont(),1.1f);
- if(PC->Hands && PC->Hands->ChargingThrow){DrawRect(FLinearColor(.04,.05,.05,.8),Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140,4);DrawRect(Gold,Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140*PC->Hands->ThrowCharge,4);}
+ if(PC->Hands && PC->Hands->ChargingThrow){DrawRect(FLinearColor(.04,.05,.05,.8),Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140,4);DrawRect(HUDAccent,Canvas->ClipX*.5f-70,Canvas->ClipY*.5f+60,140*PC->Hands->ThrowCharge,4);}
  if(PC->ShowDiagnostics){
   DrawRect(FLinearColor(.015,.022,.021,.85),24,24,340,82);
-  DrawText(FString::Printf(TEXT("%.0f FPS  |  %.1f ms"),1.f/FMath::Max(PC->FrameSeconds,.001f),PC->FrameSeconds*1000),Gold,36,34,GEngine->GetSmallFont());
+  DrawText(FString::Printf(TEXT("%.0f FPS  |  %.1f ms"),1.f/FMath::Max(PC->FrameSeconds,.001f),PC->FrameSeconds*1000),HUDAccent,36,34,GEngine->GetSmallFont());
   if(PC->Hands)DrawText(FString::Printf(TEXT("Load %.1f kg  |  Stamina %.0f%%  |  Speed %.0f%%"),PC->Hands->HeldMass,PC->Hands->Stamina*100,PC->Hands->CarrySpeedScale*100),White,36,55,GEngine->GetSmallFont());
   if(PC->SurfaceResponse)DrawText(FString::Printf(TEXT("Steps %d  |  Stumbles %d"),PC->SurfaceResponse->StepCount,PC->SurfaceResponse->StumbleCount),White,36,76,GEngine->GetSmallFont());
  }
